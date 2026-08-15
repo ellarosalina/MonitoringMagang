@@ -10,6 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -26,7 +27,11 @@
             overflow: hidden;
         }
 
-        /* NAVBAR */
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
         .navbar {
             max-width: 1200px;
             margin: auto;
@@ -87,7 +92,12 @@
             background: #ffd447;
         }
 
-        /* HERO */
+
+        /* =====================================================
+           HERO
+           DESKTOP / LAPTOP - TETAP
+        ===================================================== */
+
         .hero {
             max-width: 1200px;
             height: calc(100vh - 85px);
@@ -132,7 +142,11 @@
             color: #e5f5ff;
         }
 
-        /* LOGO */
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
+
         .logo-container {
             width: 40%;
 
@@ -161,7 +175,11 @@
             max-width: 270px;
         }
 
-        /* FOOTER */
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
         .footer {
             position: absolute;
             bottom: 15px;
@@ -173,7 +191,12 @@
             color: rgba(255, 255, 255, .75);
         }
 
-        /* RESPONSIVE */
+
+        /* =====================================================
+           TABLET
+           501px - 850px
+        ===================================================== */
+
         @media (max-width: 850px) {
 
             .hero {
@@ -208,43 +231,302 @@
             }
         }
 
+
+        /* =====================================================
+           HP
+           KHUSUS <= 500px
+        ===================================================== */
+
         @media (max-width: 500px) {
+
+            /*
+             * NAVBAR HP
+             */
+
+            .navbar {
+                padding: 12px 12px;
+            }
 
             .brand {
                 font-size: 16px;
+                gap: 6px;
             }
 
             .brand img {
-                width: 38px;
-                height: 38px;
+                width: 34px;
+                height: 34px;
+            }
+
+            .nav-buttons {
+                gap: 6px;
             }
 
             .nav-buttons a {
-                padding: 8px 12px;
-                font-size: 12px;
+                padding: 8px 11px;
+                font-size: 11px;
+                border-radius: 8px;
+            }
+
+
+            /*
+             * HERO HP
+             *
+             * Dibuat vertikal seperti sebelumnya.
+             * Logo turun ke bawah.
+             */
+
+            .hero {
+                height: auto;
+
+                /*
+                 * Jangan pakai min-height 100vh
+                 * supaya isi tidak dipaksa terlalu panjang.
+                 */
+
+                min-height: 0;
+
+                margin: 0;
+
+                padding: 45px 18px 80px;
+
+                display: flex;
+
+                flex-direction: column;
+
+                align-items: center;
+
+                justify-content: flex-start;
+
+                gap: 35px;
+
+                text-align: center;
+            }
+
+
+            /*
+             * TEXT HP
+             */
+
+            .hero-content {
+                width: 100%;
+
+                display: flex;
+
+                flex-direction: column;
+
+                align-items: center;
+            }
+
+            .subtitle {
+                margin-bottom: 14px;
+
+                font-size: 14px;
+
+                line-height: 1.5;
+
+                letter-spacing: 1.8px;
             }
 
             .hero h1 {
+                margin: 0 0 16px;
+
                 font-size: 32px;
+
+                line-height: 1.08;
             }
 
             .description {
+                max-width: 360px;
+
+                margin: 0;
+
                 font-size: 14px;
+
+                line-height: 1.7;
+            }
+
+
+            /*
+             * LOGO HP
+             *
+             * Logo boleh turun ke bawah,
+             * tetapi dibuat lebih kecil agar tidak
+             * menabrak footer.
+             */
+
+            .logo-container {
+                width: 100%;
+
+                display: flex;
+
+                justify-content: center;
+
+                align-items: center;
+
+                padding: 0;
+
+                margin: 0;
             }
 
             .logo-box {
-                width: 240px;
-                height: 240px;
+                width: 220px;
+
+                height: 220px;
+
+                padding: 25px;
+
+                border-radius: 28px;
+
+                box-shadow: 0 15px 35px rgba(0, 0, 0, .16);
+            }
+
+            .logo-box img {
+                width: 100%;
+
+                max-width: 170px;
+            }
+
+
+            /*
+             * FOOTER HP
+             */
+
+            .footer {
+                position: fixed;
+
+                bottom: 8px;
+
+                left: 0;
+
+                width: 100%;
+
+                padding: 0 10px;
+
+                text-align: center;
+
+                font-size: 9px;
+
+                line-height: 1.4;
+
+                z-index: 10;
             }
         }
+
+
+        /* =====================================================
+           HP KECIL
+           <= 360px
+        ===================================================== */
+
+        @media (max-width: 360px) {
+
+            .navbar {
+                padding: 10px;
+            }
+
+            .brand {
+                font-size: 13px;
+                gap: 4px;
+            }
+
+            .brand img {
+                width: 28px;
+                height: 28px;
+            }
+
+            .nav-buttons {
+                gap: 4px;
+            }
+
+            .nav-buttons a {
+                padding: 7px 9px;
+                font-size: 10px;
+            }
+
+
+            /*
+             * HERO
+             */
+
+            .hero {
+                padding: 38px 14px 75px;
+
+                gap: 28px;
+            }
+
+
+            /*
+             * TEXT
+             */
+
+            .subtitle {
+                font-size: 11px;
+
+                letter-spacing: 1.2px;
+
+                margin-bottom: 10px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+
+                line-height: 1.08;
+
+                margin-bottom: 13px;
+            }
+
+            .description {
+                max-width: 310px;
+
+                font-size: 12px;
+
+                line-height: 1.6;
+            }
+
+
+            /*
+             * LOGO
+             */
+
+            .logo-box {
+                width: 180px;
+
+                height: 180px;
+
+                padding: 20px;
+
+                border-radius: 24px;
+            }
+
+            .logo-box img {
+                max-width: 140px;
+            }
+
+
+            /*
+             * FOOTER
+             */
+
+            .footer {
+                bottom: 5px;
+
+                font-size: 8px;
+            }
+        }
+
     </style>
 </head>
+
 
 <body>
 
 <div class="home">
 
-    <!-- NAVBAR -->
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
     <nav class="navbar">
 
         <a href="{{ url('/') }}" class="brand">
@@ -254,20 +536,32 @@
                 alt="Logo Disdik Jabar"
             >
 
-            <span>SIM MagangGTK</span>
+            <span>
+                SIM MagangGTK
+            </span>
 
         </a>
 
+
         <div class="nav-buttons">
 
-            <a href="{{ route('login') }}" class="login">
+            <a
+                href="{{ route('login') }}"
+                class="login"
+            >
                 Masuk
             </a>
 
+
             @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="register">
+
+                <a
+                    href="{{ route('register') }}"
+                    class="register"
+                >
                     Daftar
                 </a>
+
             @endif
 
         </div>
@@ -275,8 +569,14 @@
     </nav>
 
 
-    <!-- HERO -->
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
     <section class="hero">
+
+
+        <!-- TEXT -->
 
         <div class="hero-content">
 
@@ -284,10 +584,12 @@
                 DINAS PENDIDIKAN JAWA BARAT
             </div>
 
+
             <h1>
                 Sistem Informasi<br>
                 Monitoring <span>MagangGTK</span>
             </h1>
+
 
             <p class="description">
                 Platform digital untuk membantu mahasiswa,
@@ -300,6 +602,7 @@
 
 
         <!-- LOGO -->
+
         <div class="logo-container">
 
             <div class="logo-box">
@@ -316,7 +619,10 @@
     </section>
 
 
-    <!-- FOOTER -->
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
     <footer class="footer">
 
         © {{ date('Y') }} SIM MagangGTK —
@@ -324,7 +630,9 @@
 
     </footer>
 
+
 </div>
 
 </body>
+
 </html>

@@ -3,6 +3,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GuruPamong;
+use App\Models\Logbook;
+use App\Models\Mahasiswa;
+use App\Models\Penempatan;
+use App\Models\Sekolah;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -33,7 +38,32 @@ class DashboardController extends Controller
 
     public function admin()
     {
-        return view('dashboards.admin');
+        $totalMahasiswa = Mahasiswa::count();
+        $totalSekolah = Sekolah::count();
+        $totalGuruPamong = GuruPamong::count();
+        $totalPenempatan = Penempatan::count();
+
+        $penempatanPerStatus = [
+            'menunggu' => Penempatan::where('status', 'menunggu')->count(),
+            'berjalan' => Penempatan::where('status', 'berjalan')->count(),
+            'selesai' => Penempatan::where('status', 'selesai')->count(),
+            'dibatalkan' => Penempatan::where('status', 'dibatalkan')->count(),
+        ];
+
+         $logbookMenunggu = Logbook::where('status_verifikasi', 'menunggu')->count();
+        $logbookDisetujui = Logbook::where('status_verifikasi', 'disetujui')->count();
+        $logbookRevisi = Logbook::where('status_verifikasi', 'revisi')->count();
+
+        return view('dashboards.admin', compact(
+            'totalMahasiswa',
+            'totalSekolah',
+            'totalGuruPamong',
+            'totalPenempatan',
+            'penempatanPerStatus',
+            'logbookMenunggu',
+            'logbookDisetujui',
+            'logbookRevisi'
+        ));
     }
 
     public function guruPamong()

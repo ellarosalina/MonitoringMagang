@@ -9,6 +9,7 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenempatanController;
 use App\Http\Controllers\MahasiswaAbsensiController;
 use App\Http\Controllers\MahasiswaLogbookController;
+use App\Http\Controllers\MahasiswaProfilController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -56,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/logbook/{logbook}/edit', [MahasiswaLogbookController::class, 'edit'])->name('logbook.edit');
         Route::put('/logbook/{logbook}', [MahasiswaLogbookController::class, 'update'])->name('logbook.update');
         Route::delete('/logbook/{logbook}', [MahasiswaLogbookController::class, 'destroy'])->name('logbook.destroy');
+        Route::get('/profil', [MahasiswaProfilController::class, 'index'])->name('profil.index');
+        Route::put('/profil', [MahasiswaProfilController::class, 'update'])->name('profil.update');
     });
 });
 

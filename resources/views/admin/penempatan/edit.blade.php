@@ -17,7 +17,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Mahasiswa</label>
-                <select name="mahasiswa_id" class="w-full border rounded p-2">
+                <select name="mahasiswa_id" class="w-full border rounded p-2 searchable-select" required>
                     @foreach ($mahasiswas as $mahasiswa)
                         <option value="{{ $mahasiswa->id }}" {{ old('mahasiswa_id', $penempatan->mahasiswa_id) == $mahasiswa->id ? 'selected' : '' }}>
                             {{ $mahasiswa->user->name }} ({{ $mahasiswa->nim }})
@@ -28,7 +28,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Sekolah</label>
-                <select name="sekolah_id" class="w-full border rounded p-2">
+                <select name="sekolah_id" class="w-full border rounded p-2 searchable-select" required>
                     @foreach ($sekolahs as $sekolah)
                         <option value="{{ $sekolah->id }}" {{ old('sekolah_id', $penempatan->sekolah_id) == $sekolah->id ? 'selected' : '' }}>
                             {{ $sekolah->nama_sekolah }}
@@ -39,7 +39,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Guru Pamong</label>
-                <select name="guru_pamong_id" class="w-full border rounded p-2">
+                <select name="guru_pamong_id" class="w-full border rounded p-2 searchable-select" required>
                     @foreach ($guruPamongs as $guruPamong)
                         <option value="{{ $guruPamong->id }}" {{ old('guru_pamong_id', $penempatan->guru_pamong_id) == $guruPamong->id ? 'selected' : '' }}>
                             {{ $guruPamong->user->name }}
@@ -49,7 +49,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium mb-1">Dosen Pembimbing (opsional)</label>
+                <label class="block font-medium mb-1">Dosen Pembimbing</label>
                 <select name="dosen_pembimbing_id" class="w-full border rounded p-2">
                     <option value="">-- Pilih Dosen Pembimbing --</option>
                     @foreach ($dosenPembimbings as $dosenPembimbing)
@@ -62,22 +62,22 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Periode</label>
-                <input type="text" name="periode" value="{{ old('periode', $penempatan->periode) }}" class="w-full border rounded p-2">
+               <input type="text" name="periode" value="{{ old('periode', $penempatan->periode) }}" class="w-full border rounded p-2" required>
             </div>
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Tanggal Mulai</label>
-                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', $penempatan->tanggal_mulai) }}" class="w-full border rounded p-2">
+                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', $penempatan->tanggal_mulai->format('Y-m-d')) }}" class="w-full border rounded p-2" required>
             </div>
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Tanggal Selesai</label>
-                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai', $penempatan->tanggal_selesai) }}" class="w-full border rounded p-2">
+                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai', $penempatan->tanggal_selesai->format('Y-m-d')) }}" class="w-full border rounded p-2" required>
             </div>
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Status</label>
-                <select name="status" class="w-full border rounded p-2">
+                <select name="status" class="w-full border rounded p-2" required>
                     <option value="menunggu" {{ $penempatan->status == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                     <option value="berjalan" {{ $penempatan->status == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
                     <option value="selesai" {{ $penempatan->status == 'selesai' ? 'selected' : '' }}>Selesai</option>

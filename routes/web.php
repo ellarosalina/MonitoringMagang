@@ -11,6 +11,8 @@ use App\Http\Controllers\MahasiswaAbsensiController;
 use App\Http\Controllers\MahasiswaLogbookController;
 use App\Http\Controllers\MahasiswaProfilController;
 use App\Http\Controllers\MonitoringController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\AdminProfilController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,6 +39,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('penempatan', PenempatanController::class);
         Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
         Route::get('/monitoring/{penempatan}', [MonitoringController::class, 'show'])->name('monitoring.show');
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+        Route::get('/profil', [AdminProfilController::class, 'index'])->name('profil.index');
+        Route::put('/profil', [AdminProfilController::class, 'update'])->name('profil.update');
     });
 
     // Khusus Guru Pamong

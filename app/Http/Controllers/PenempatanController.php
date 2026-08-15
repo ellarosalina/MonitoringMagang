@@ -31,20 +31,11 @@ class PenempatanController extends Controller
     public function create()
     {
         $mahasiswas = Mahasiswa::with('user')->get();
-
         $sekolahs = Sekolah::where('status', 'aktif')->get();
-
         $guruPamongs = GuruPamong::with('user')->get();
-
         $dosenPembimbings = DosenPembimbing::all();
-
         return view(
-            'admin.penempatan.create',
-            compact(
-                'mahasiswas',
-                'sekolahs',
-                'guruPamongs',
-                'dosenPembimbings'
+            'admin.penempatan.create',compact('mahasiswas','sekolahs','guruPamongs','dosenPembimbings'
             )
         );
     }
@@ -53,72 +44,36 @@ class PenempatanController extends Controller
     {
         $validated = $request->validate([
             'mahasiswa_id' => 'required|exists:mahasiswas,id',
-
             'sekolah_id' => 'required|exists:sekolahs,id',
-
             'guru_pamong_id' => 'required|exists:guru_pamongs,id',
-
-            'dosen_pembimbing_id' =>
-                'nullable|exists:dosen_pembimbings,id',
-
-            'periode' =>
-                'required|string|max:100',
-
-            'tanggal_mulai' =>
-                'required|date',
-
-            'tanggal_selesai' =>
-                'required|date|after_or_equal:tanggal_mulai',
-
-            'status' =>
-                'required|in:menunggu,berjalan,selesai,dibatalkan',
+            'dosen_pembimbing_id' =>'nullable|exists:dosen_pembimbings,id',
+            'periode' =>'required|string|max:100','tanggal_mulai' =>'required|date',
+            'tanggal_selesai' =>'required|date|after_or_equal:tanggal_mulai',
+            'status' =>'required|in:menunggu,berjalan,selesai,dibatalkan',
         ]);
 
         Penempatan::create($validated);
 
         return redirect()
             ->route('admin.penempatan.index')
-            ->with(
-                'success',
-                'Data penempatan berhasil ditambahkan.'
-            );
+            ->with('success','Data penempatan berhasil ditambahkan.');
     }
 
     public function show(Penempatan $penempatan)
     {
         $penempatan->load([
-            'mahasiswa.user',
-            'sekolah',
-            'guruPamong.user',
-            'dosenPembimbing'
-        ]);
+            'mahasiswa.user','sekolah','guruPamong.user','dosenPembimbing']);
 
-        return view(
-            'admin.penempatan.show',
-            compact('penempatan')
-        );
+        return view('admin.penempatan.show',compact('penempatan'));
     }
 
     public function edit(Penempatan $penempatan)
     {
         $mahasiswas = Mahasiswa::with('user')->get();
-
         $sekolahs = Sekolah::where('status', 'aktif')->get();
-
         $guruPamongs = GuruPamong::with('user')->get();
-
         $dosenPembimbings = DosenPembimbing::all();
-
-        return view(
-            'admin.penempatan.edit',
-            compact(
-                'penempatan',
-                'mahasiswas',
-                'sekolahs',
-                'guruPamongs',
-                'dosenPembimbings'
-            )
-        );
+        return view('admin.penempatan.edit',compact('penempatan','mahasiswas','sekolahs','guruPamongs','dosenPembimbings'));
     }
 
     public function update(

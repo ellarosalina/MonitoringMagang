@@ -16,7 +16,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Mahasiswa</label>
-                <select name="mahasiswa_id" class="w-full border rounded p-2">
+                 <select name="mahasiswa_id" class="w-full border rounded p-2 searchable-select" required>
                     <option value="">-- Pilih Mahasiswa --</option>
                     @foreach ($mahasiswas as $mahasiswa)
                         <option value="{{ $mahasiswa->id }}" {{ old('mahasiswa_id') == $mahasiswa->id ? 'selected' : '' }}>
@@ -28,7 +28,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Sekolah</label>
-                <select name="sekolah_id" class="w-full border rounded p-2">
+                <select name="sekolah_id" class="w-full border rounded p-2 searchable-select" required>
                     <option value="">-- Pilih Sekolah --</option>
                     @foreach ($sekolahs as $sekolah)
                         <option value="{{ $sekolah->id }}" {{ old('sekolah_id') == $sekolah->id ? 'selected' : '' }}>
@@ -40,7 +40,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Guru Pamong</label>
-                <select name="guru_pamong_id" class="w-full border rounded p-2">
+                <select name="guru_pamong_id" class="w-full border rounded p-2 searchable-select" required>
                     <option value="">-- Pilih Guru Pamong --</option>
                     @foreach ($guruPamongs as $guruPamong)
                         <option value="{{ $guruPamong->id }}" {{ old('guru_pamong_id') == $guruPamong->id ? 'selected' : '' }}>
@@ -52,7 +52,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Dosen Pembimbing (opsional)</label>
-                <select name="dosen_pembimbing_id" class="w-full border rounded p-2">
+                <select name="dosen_pembimbing_id" class="w-full border rounded p-2 searchable-select">
                     <option value="">-- Pilih Dosen Pembimbing --</option>
                     @foreach ($dosenPembimbings as $dosenPembimbing)
                         <option value="{{ $dosenPembimbing->id }}" {{ old('dosen_pembimbing_id') == $dosenPembimbing->id ? 'selected' : '' }}>
@@ -64,22 +64,23 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Periode</label>
-                <input type="text" name="periode" value="{{ old('periode') }}" placeholder="Contoh: Ganjil 2026/2027" class="w-full border rounded p-2">
+                <input type="text" name="periode" value="{{ old('periode') }}" placeholder="Contoh: Ganjil 2026/2027" class="w-full border rounded p-2" required>
             </div>
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Tanggal Mulai</label>
-                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" class="w-full border rounded p-2">
+                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" class="w-full border rounded p-2" required>
+blade
             </div>
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Tanggal Selesai</label>
-                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai') }}" class="w-full border rounded p-2">
+                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai') }}" class="w-full border rounded p-2" required>
             </div>
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Status</label>
-                <select name="status" class="w-full border rounded p-2">
+                <select name="status" class="w-full border rounded p-2" required>
                     <option value="menunggu">Menunggu</option>
                     <option value="berjalan">Berjalan</option>
                     <option value="selesai">Selesai</option>

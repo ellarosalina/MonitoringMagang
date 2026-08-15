@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Dashboard' }} - SIM Magang GTK</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 </head>
 <body class="bg-gray-100" x-data="{ dataMasterOpen: false }">
 
@@ -74,7 +75,14 @@
                     Monitoring
                 </a>
 
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-slate-700">
+                <a href="{{ route('admin.users.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-slate-700 {{ request()->routeIs('admin.users.*') ? 'bg-blue-600' : '' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 100-8 4 4 0 000 8zm6 2a4 4 0 00-3-3.87m-9 3.87a4 4 0 013-3.87" /></svg>
+                    Manajemen User
+                </a>
+
+                <a href="{{ route('admin.profil.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-slate-700 {{ request()->routeIs('admin.profil.*') ? 'bg-blue-600' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                     Ganti Password
                 </a>
@@ -109,6 +117,19 @@
         </div>
 
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.searchable-select').forEach(function (el) {
+                new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                });
+            });
+        });
+    </script>
 
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 

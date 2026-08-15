@@ -9,50 +9,25 @@ use Illuminate\Support\Facades\Storage;
 
 class MahasiswaLogbookController extends Controller
 {
-    /**
-     * Ambil penempatan terbaru milik mahasiswa yang sedang login.
-     */
-    private function penempatanAktif()
-    {
-        return Auth::user()->mahasiswa->penempatans()->latest()->first();
-    }
-
-    /**
-     * Validasi bahwa logbook memang milik penempatan mahasiswa yang login.
-     */
-    private function pastikanMilikSendiri(Logbook $logbook, $penempatan): void
-    {
-        if (!$penempatan || $logbook->penempatan_id != $penempatan->id) {
-            abort(403);
-        }
-    }
-
     public function index()
     {
-        $penempatan = $this->penempatanAktif();
+        $penempatan = Auth::user()->mahasiswa->penempatans()->latest()->first();
 
         if (!$penempatan) {
-            return view('mahasiswa.logbook.index', [
-                'penempatan' => null,
-                'logbooks' => collect(),
-            ]);
+            return view('mahasiswa.logbook.index', ['penempatan' => null, 'logbooks' => collect()]);
         }
 
-        $logbooks = $penempatan->logbooks()
-            ->orderBy('tanggal', 'desc')
-            ->paginate(10);
+        $logbooks = $penempatan->logbooks()->orderBy('tanggal', 'desc')->paginate(10);
 
         return view('mahasiswa.logbook.index', compact('penempatan', 'logbooks'));
     }
 
     public function create()
     {
-        $penempatan = $this->penempatanAktif();
+        $penempatan = Auth::user()->mahasiswa->penempatans()->latest()->first();
 
         if (!$penempatan) {
-            return redirect()
-                ->route('mahasiswa.logbook.index')
-                ->with('error', 'Anda belum memiliki penempatan magang. Hubungi Admin GTK.');
+            return redirect()->route('mahasiswa.logbook.index')->with('error', 'Anda belum memiliki penempatan magang. Hubungi Admin GTK.');
         }
 
         return view('mahasiswa.logbook.create', compact('penempatan'));
@@ -60,33 +35,27 @@ class MahasiswaLogbookController extends Controller
 
     public function store(Request $request)
     {
-        $penempatan = $this->penempatanAktif();
-
-        if (!$penempatan) {
-            return redirect()
-                ->route('mahasiswa.logbook.index')
-                ->with('error', 'Anda belum memiliki penempatan magang.');
-        }
+        $penempatan = Auth::user()->mahasiswa->penempatans()->latest()->first();
 
         $request->validate([
             'tanggal' => 'required|date',
-            'kegiatan' => 'required|string',
+            'kegiatan' => 'required',
             'dokumentasi' => 'nullable|image|max:2048',
         ]);
 
-        $sudahAda = $penempatan->logbooks()
-            ->whereDate('tanggal', $request->tanggal)
-            ->exists();
+        // Cek apakah sudah ada logbook di tanggal yang sama untuk penempatan ini
+        $sudahAda = $penempatan->logbooks()->whereDate('tanggal', $request->tanggal)->exists();
 
         if ($sudahAda) {
             return back()->withInput()->withErrors([
-                'tanggal' => 'Logbook untuk tanggal tersebut sudah ada. Satu tanggal hanya dapat memiliki satu logbook.',
+                'tanggal' => 'Anda sudah mengisi logbook untuk tanggal ini. Satu tanggal hanya boleh 1 logbook.',
             ]);
         }
 
-        $path = $request->hasFile('dokumentasi')
-            ? $request->file('dokumentasi')->store('logbook', 'public')
-            : null;
+        $path = null;
+        if ($request->hasFile('dokumentasi')) {
+            $path = $request->file('dokumentasi')->store('logbook', 'public');
+        }
 
         Logbook::create([
             'penempatan_id' => $penempatan->id,
@@ -94,56 +63,33 @@ class MahasiswaLogbookController extends Controller
             'kegiatan' => $request->kegiatan,
             'dokumentasi' => $path,
             'status_verifikasi' => 'menunggu',
-            'catatan_guru_pamong' => null,
-            'verified_by' => null,
-            'verified_at' => null,
         ]);
 
-        return redirect()
-            ->route('mahasiswa.logbook.index')
-            ->with('success', 'Logbook berhasil disimpan.');
+        return redirect()->route('mahasiswa.logbook.index')->with('success', 'Logbook berhasil disimpan.');
     }
 
     public function edit(Logbook $logbook)
     {
-        $penempatan = $this->penempatanAktif();
-        $this->pastikanMilikSendiri($logbook, $penempatan);
-
-        if ($logbook->status_verifikasi === 'disetujui') {
-            return redirect()
-                ->route('mahasiswa.logbook.index')
-                ->with('error', 'Logbook yang sudah disetujui tidak dapat diedit.');
-        }
-
         return view('mahasiswa.logbook.edit', compact('logbook'));
     }
 
     public function update(Request $request, Logbook $logbook)
     {
-        $penempatan = $this->penempatanAktif();
-        $this->pastikanMilikSendiri($logbook, $penempatan);
-
-        if ($logbook->status_verifikasi === 'disetujui') {
-            return redirect()
-                ->route('mahasiswa.logbook.index')
-                ->with('error', 'Logbook yang sudah disetujui tidak dapat diedit.');
-        }
-
         $request->validate([
             'tanggal' => 'required|date',
-            'kegiatan' => 'required|string',
+            'kegiatan' => 'required',
             'dokumentasi' => 'nullable|image|max:2048',
         ]);
 
-        // Logbook yang sedang diedit tidak dihitung sebagai duplikat
-        $duplikat = $penempatan->logbooks()
+        // Cek duplikat tanggal, tapi kecualikan logbook yang sedang diedit ini sendiri
+        $duplikat = $logbook->penempatan->logbooks()
             ->whereDate('tanggal', $request->tanggal)
             ->where('id', '!=', $logbook->id)
             ->exists();
 
         if ($duplikat) {
             return back()->withInput()->withErrors([
-                'tanggal' => 'Sudah ada logbook lain pada tanggal tersebut. Silakan pilih tanggal yang berbeda.',
+                'tanggal' => 'Sudah ada logbook lain di tanggal tersebut. Silakan pilih tanggal yang berbeda.',
             ]);
         }
 
@@ -153,7 +99,6 @@ class MahasiswaLogbookController extends Controller
             if ($logbook->dokumentasi) {
                 Storage::disk('public')->delete($logbook->dokumentasi);
             }
-
             $path = $request->file('dokumentasi')->store('logbook', 'public');
         }
 
@@ -161,36 +106,21 @@ class MahasiswaLogbookController extends Controller
             'tanggal' => $request->tanggal,
             'kegiatan' => $request->kegiatan,
             'dokumentasi' => $path,
-            'status_verifikasi' => 'menunggu', // harus diverifikasi ulang setelah diedit
+            'status_verifikasi' => 'menunggu',
             'catatan_guru_pamong' => null,
-            'verified_by' => null,
-            'verified_at' => null,
         ]);
 
-        return redirect()
-            ->route('mahasiswa.logbook.index')
-            ->with('success', 'Logbook berhasil diperbarui dan menunggu verifikasi kembali.');
+        return redirect()->route('mahasiswa.logbook.index')->with('success', 'Logbook berhasil diperbarui.');
     }
 
     public function destroy(Logbook $logbook)
     {
-        $penempatan = $this->penempatanAktif();
-        $this->pastikanMilikSendiri($logbook, $penempatan);
-
-        if ($logbook->status_verifikasi !== 'menunggu') {
-            return redirect()
-                ->route('mahasiswa.logbook.index')
-                ->with('error', 'Logbook yang sudah diproses Guru Pamong tidak dapat dihapus.');
-        }
-
         if ($logbook->dokumentasi) {
             Storage::disk('public')->delete($logbook->dokumentasi);
         }
 
         $logbook->delete();
 
-        return redirect()
-            ->route('mahasiswa.logbook.index')
-            ->with('success', 'Logbook berhasil dihapus.');
+        return redirect()->route('mahasiswa.logbook.index')->with('success', 'Logbook berhasil dihapus.');
     }
 }

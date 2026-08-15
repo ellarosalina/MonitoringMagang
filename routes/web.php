@@ -10,6 +10,7 @@ use App\Http\Controllers\PenempatanController;
 use App\Http\Controllers\MahasiswaAbsensiController;
 use App\Http\Controllers\MahasiswaLogbookController;
 use App\Http\Controllers\MahasiswaProfilController;
+use App\Http\Controllers\MonitoringController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -34,6 +35,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('dosen-pembimbing', DosenPembimbingController::class);
         Route::resource('mahasiswa', MahasiswaController::class);
         Route::resource('penempatan', PenempatanController::class);
+        Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+        Route::get('/monitoring/{penempatan}', [MonitoringController::class, 'show'])->name('monitoring.show');
     });
 
     // Khusus Guru Pamong

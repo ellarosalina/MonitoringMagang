@@ -1,24 +1,15 @@
-<x-layouts.admin title="Data Penempatan Magang" subtitle="Kelola penempatan mahasiswa ke sekolah">
+<x-layouts.admin title="Monitoring Magang" subtitle="Pantau progress seluruh mahasiswa magang">
 
-    @if (session('success'))
-        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <a href="{{ route('admin.penempatan.create') }}" class="inline-block mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        + Tambah Penempatan
-    </a>
-
-    <div class="bg-white rounded-lg shadow-sm overflow-x-auto">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
         <table class="w-full text-left">
             <thead class="bg-gray-50 border-b">
                 <tr>
                     <th class="p-3 text-sm font-semibold text-gray-600">Mahasiswa</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Sekolah</th>
-                    <th class="p-3 text-sm font-semibold text-gray-600">Guru Pamong</th>
-                    <th class="p-3 text-sm font-semibold text-gray-600">Dosen Pembimbing</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Periode</th>
+                    <th class="p-3 text-sm font-semibold text-gray-600">Progress</th>
+                    <th class="p-3 text-sm font-semibold text-gray-600">Kehadiran</th>
+                    <th class="p-3 text-sm font-semibold text-gray-600">Logbook</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Status</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Aksi</th>
                 </tr>
@@ -28,9 +19,22 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="p-3 text-sm">{{ $penempatan->mahasiswa->user->name }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->sekolah->nama_sekolah }}</td>
-                        <td class="p-3 text-sm">{{ $penempatan->guruPamong->user->name }}</td>
-                        <td class="p-3 text-sm">{{ $penempatan->dosenPembimbing->nama ?? '-' }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->periode }}</td>
+                        <td class="p-3 text-sm w-40">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $penempatan->progress_percent }}%"></div>
+                                </div>
+                                <span class="text-xs text-gray-500">{{ $penempatan->progress_percent }}%</span>
+                            </div>
+                        </td>
+                        <td class="p-3 text-sm">{{ $penempatan->hadir_count }}/{{ $penempatan->absensis_count }}</td>
+                        <td class="p-3 text-sm">
+                            {{ $penempatan->logbook_disetujui_count }}/{{ $penempatan->logbooks_count }}
+                            @if ($penempatan->logbook_menunggu_count > 0)
+                                <span class="text-xs text-yellow-600">({{ $penempatan->logbook_menunggu_count }} menunggu)</span>
+                            @endif
+                        </td>
                         <td class="p-3 text-sm">
                             <span class="px-2 py-1 text-xs rounded
                                 @if($penempatan->status == 'berjalan') bg-blue-100 text-blue-700
@@ -41,18 +45,13 @@
                                 {{ ucfirst($penempatan->status) }}
                             </span>
                         </td>
-                        <td class="p-3 text-sm space-x-2">
-                            <a href="{{ route('admin.penempatan.edit', $penempatan->id) }}" class="text-blue-600 hover:underline">Edit</a>
-                            <form action="{{ route('admin.penempatan.destroy', $penempatan->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                            </form>
+                        <td class="p-3 text-sm">
+                            <a href="{{ route('admin.monitoring.show', $penempatan->id) }}" class="text-blue-600 hover:underline">Lihat</a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
+                        <td colspan="8" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
                     </tr>
                 @endforelse
             </tbody>

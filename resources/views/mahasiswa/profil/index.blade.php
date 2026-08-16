@@ -53,12 +53,18 @@
         </div>
 
         {{-- Form yang bisa diubah --}}
+        
         <div class="bg-white rounded-lg shadow-sm p-6 lg:col-span-2">
-            <h3 class="font-semibold text-gray-700 mb-4">Ubah Data Kontak & Password</h3>
+            <h3 class="font-semibold text-gray-700 mb-4">Ubah Data Profil & Password</h3>
 
             <form action="{{ route('mahasiswa.profil.update') }}" method="POST">
                 @csrf
                 @method('PUT')
+
+                <div class="mb-4">
+                    <label class="block font-medium mb-1 text-sm">Dosen Pembimbing</label>
+                    <input type="text" name="dosen_pembimbing" value="{{ old('dosen_pembimbing', $mahasiswa->dosen_pembimbing) }}" placeholder="Nama dosen pembimbing dari kampus" class="w-full border rounded p-2">
+                </div>
 
                 <div class="mb-4">
                     <label class="block font-medium mb-1 text-sm">No. HP</label>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DosenPembimbing;
 use App\Models\GuruPamong;
 use App\Models\Mahasiswa;
 use App\Models\Penempatan;
@@ -13,19 +12,11 @@ class PenempatanController extends Controller
 {
     public function index()
     {
-        $penempatans = Penempatan::with([
-            'mahasiswa.user',
-            'sekolah',
-            'guruPamong.user',
-            'dosenPembimbing'
-        ])
+        $penempatans = Penempatan::with(['mahasiswa.user', 'sekolah', 'guruPamong.user'])
             ->latest()
             ->paginate(10);
 
-        return view(
-            'admin.penempatan.index',
-            compact('penempatans')
-        );
+        return view('admin.penempatan.index', compact('penempatans'));
     }
 
     public function create()
@@ -33,27 +24,23 @@ class PenempatanController extends Controller
         $mahasiswas = Mahasiswa::with('user')->get();
         $sekolahs = Sekolah::where('status', 'aktif')->get();
         $guruPamongs = GuruPamong::with('user')->get();
-        $dosenPembimbings = DosenPembimbing::all();
-        return view(
-            'admin.penempatan.create',compact('mahasiswas','sekolahs','guruPamongs','dosenPembimbings'
-            )
-        );
+
+        return view('admin.penempatan.create', compact('mahasiswas', 'sekolahs', 'guruPamongs'));
     }
 
     public function store(Request $request)
     {
-       $request->validate([
+        $request->validate([
             'mahasiswa_id' => 'required|exists:mahasiswas,id',
             'sekolah_id' => 'required|exists:sekolahs,id',
             'guru_pamong_id' => 'required|exists:guru_pamongs,id',
-            'dosen_pembimbing_id' => 'nullable|exists:dosen_pembimbings,id',
             'periode' => 'required',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'status' => 'required|in:menunggu,berjalan,selesai,dibatalkan',
         ]);
 
-        $guruPamong = \App\Models\GuruPamong::find($request->guru_pamong_id);
+        $guruPamong = GuruPamong::find($request->guru_pamong_id);
         if ($guruPamong->sekolah_id != $request->sekolah_id) {
             return back()->withInput()->withErrors([
                 'guru_pamong_id' => 'Guru pamong yang dipilih tidak mengajar di sekolah yang dipilih.',
@@ -61,17 +48,13 @@ class PenempatanController extends Controller
         }
 
         Penempatan::create($request->all());
-        return redirect()
-            ->route('admin.penempatan.index')
-            ->with('success','Data penempatan berhasil ditambahkan.');
+
+        return redirect()->route('admin.penempatan.index')->with('success', 'Data penempatan berhasil ditambahkan.');
     }
 
     public function show(Penempatan $penempatan)
     {
-        $penempatan->load([
-            'mahasiswa.user','sekolah','guruPamong.user','dosenPembimbing']);
-
-        return view('admin.penempatan.show',compact('penempatan'));
+        return view('admin.penempatan.show', compact('penempatan'));
     }
 
     public function edit(Penempatan $penempatan)
@@ -79,55 +62,38 @@ class PenempatanController extends Controller
         $mahasiswas = Mahasiswa::with('user')->get();
         $sekolahs = Sekolah::where('status', 'aktif')->get();
         $guruPamongs = GuruPamong::with('user')->get();
-        $dosenPembimbings = DosenPembimbing::all();
-        return view('admin.penempatan.edit',compact('penempatan','mahasiswas','sekolahs','guruPamongs','dosenPembimbings'));
+
+        return view('admin.penempatan.edit', compact('penempatan', 'mahasiswas', 'sekolahs', 'guruPamongs'));
     }
 
-    public function update(
-        Request $request,
-        Penempatan $penempatan
-    ) {
-        $validated = $request->validate([
-            'mahasiswa_id' =>
-                'required|exists:mahasiswas,id',
-
-            'sekolah_id' =>
-                'required|exists:sekolahs,id',
-
-            'guru_pamong_id' =>
-                'required|exists:guru_pamongs,id',
-
-            'dosen_pembimbing_id' =>
-                'nullable|exists:dosen_pembimbings,id',
-
-            'periode' =>
-                'required|string|max:100',
-
-            'tanggal_mulai' =>
-                'required|date',
-
-            'tanggal_selesai' =>
-                'required|date|after_or_equal:tanggal_mulai',
-
-            'status' =>
-                'required|in:menunggu,berjalan,selesai,dibatalkan',
+    public function update(Request $request, Penempatan $penempatan)
+    {
+        $request->validate([
+            'mahasiswa_id' => 'required|exists:mahasiswas,id',
+            'sekolah_id' => 'required|exists:sekolahs,id',
+            'guru_pamong_id' => 'required|exists:guru_pamongs,id',
+            'periode' => 'required',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'status' => 'required|in:menunggu,berjalan,selesai,dibatalkan',
         ]);
 
-        $penempatan->update($validated);
+        $guruPamong = GuruPamong::find($request->guru_pamong_id);
+        if ($guruPamong->sekolah_id != $request->sekolah_id) {
+            return back()->withInput()->withErrors([
+                'guru_pamong_id' => 'Guru pamong yang dipilih tidak mengajar di sekolah yang dipilih.',
+            ]);
+        }
 
-        return redirect()
-            ->route('admin.penempatan.index')
-            ->with('success','Data penempatan berhasil diperbarui.'
-            );
+        $penempatan->update($request->all());
+
+        return redirect()->route('admin.penempatan.index')->with('success', 'Data penempatan berhasil diperbarui.');
     }
 
-    
     public function destroy(Penempatan $penempatan)
     {
         $penempatan->delete();
 
-        return redirect()
-            ->route('admin.penempatan.index')
-            ->with('success','Data penempatan berhasil dihapus.');
+        return redirect()->route('admin.penempatan.index')->with('success', 'Data penempatan berhasil dihapus.');
     }
 }

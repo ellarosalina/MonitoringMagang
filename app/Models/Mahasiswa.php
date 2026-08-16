@@ -14,6 +14,7 @@ class Mahasiswa extends Model
         'nim',
         'universitas',
         'fakultas',
+        'dosen_pembimbing',
         'prodi',
         'no_hp',
         'alamat',

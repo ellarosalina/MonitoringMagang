@@ -25,7 +25,7 @@ class MonitoringController extends Controller
 
     public function show(Penempatan $penempatan)
     {
-        $penempatan->load(['mahasiswa.user', 'sekolah', 'guruPamong.user', 'dosenPembimbing']);
+        $penempatan->load(['mahasiswa.user', 'sekolah', 'guruPamong.user']);
 
         $absensiPerStatus = [
             'hadir' => $penempatan->absensis()->where('status', 'hadir')->count(),

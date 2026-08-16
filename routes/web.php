@@ -4,7 +4,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\GuruPamongController;
-use App\Http\Controllers\DosenPembimbingController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenempatanController;
 use App\Http\Controllers\MahasiswaAbsensiController;
@@ -37,7 +36,6 @@ Route::middleware(['auth'])->group(function () {
         
         Route::resource('sekolah', SekolahController::class);
         Route::resource('guru-pamong', GuruPamongController::class);
-        Route::resource('dosen-pembimbing', DosenPembimbingController::class);
         Route::resource('mahasiswa', MahasiswaController::class);
         Route::resource('penempatan', PenempatanController::class);
         Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');

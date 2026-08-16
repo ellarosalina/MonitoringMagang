@@ -17,7 +17,6 @@
                     <th class="p-3 text-sm font-semibold text-gray-600">Mahasiswa</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Sekolah</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Guru Pamong</th>
-                    <th class="p-3 text-sm font-semibold text-gray-600">Dosen Pembimbing</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Periode</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Status</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Aksi</th>
@@ -29,7 +28,6 @@
                         <td class="p-3 text-sm">{{ $penempatan->mahasiswa->user->name }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->sekolah->nama_sekolah }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->guruPamong->user->name }}</td>
-                        <td class="p-3 text-sm">{{ $penempatan->dosenPembimbing->nama ?? '-' }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->periode }}</td>
                         <td class="p-3 text-sm">
                             <span class="px-2 py-1 text-xs rounded
@@ -52,7 +50,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
+                        <td colspan="6" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
                     </tr>
                 @endforelse
             </tbody>

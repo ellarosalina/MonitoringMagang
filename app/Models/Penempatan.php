@@ -14,7 +14,6 @@ class Penempatan extends Model
         'mahasiswa_id',
         'sekolah_id',
         'guru_pamong_id',
-        'dosen_pembimbing_id',
         'periode',
         'tanggal_mulai',
         'tanggal_selesai',
@@ -39,11 +38,6 @@ class Penempatan extends Model
     public function guruPamong()
     {
         return $this->belongsTo(GuruPamong::class);
-    }
-
-    public function dosenPembimbing()
-    {
-        return $this->belongsTo(DosenPembimbing::class);
     }
 
     public function absensis()

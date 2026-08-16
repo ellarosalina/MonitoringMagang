@@ -10,7 +10,7 @@
                 <div><dt class="text-gray-500">Mahasiswa</dt><dd class="font-medium">{{ $penempatan->mahasiswa->user->name }} ({{ $penempatan->mahasiswa->nim }})</dd></div>
                 <div><dt class="text-gray-500">Sekolah</dt><dd class="font-medium">{{ $penempatan->sekolah->nama_sekolah }}</dd></div>
                 <div><dt class="text-gray-500">Guru Pamong</dt><dd class="font-medium">{{ $penempatan->guruPamong->user->name }}</dd></div>
-                <div><dt class="text-gray-500">Dosen Pembimbing</dt><dd class="font-medium">{{ $penempatan->dosenPembimbing->nama ?? '-' }}</dd></div>
+                <div><dt class="text-gray-500">Dosen Pembimbing</dt><dd class="font-medium">{{ $penempatan->mahasiswa->dosen_pembimbing ?? '-' }}</dd></div>
                 <div><dt class="text-gray-500">Periode</dt><dd class="font-medium">{{ $penempatan->periode }}</dd></div>
                 <div><dt class="text-gray-500">Status</dt><dd class="font-medium">{{ ucfirst($penempatan->status) }}</dd></div>
             </dl>

@@ -41,7 +41,7 @@
                 </a>
 
                 <button @click="dataMasterOpen = !dataMasterOpen"
-                        class="w-full flex items-center justify-between px-4 py-3 text-sm hover:bg-slate-700 {{ request()->routeIs('admin.sekolah.*','admin.guru-pamong.*','admin.dosen-pembimbing.*','admin.mahasiswa.*') ? 'bg-slate-700' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-3 text-sm hover:bg-slate-700 {{ request()->routeIs('admin.sekolah.*','admin.guru-pamong.*','admin.mahasiswa.*') ? 'bg-slate-700' : '' }}">
                     <span class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" /></svg>
                         Data Master
@@ -54,9 +54,6 @@
                     </a>
                     <a href="{{ route('admin.guru-pamong.index') }}" class="flex items-center gap-2 pl-12 pr-4 py-2 text-sm hover:bg-slate-700 {{ request()->routeIs('admin.guru-pamong.*') ? 'text-blue-400' : 'text-slate-300' }}">
                         <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Guru Pamong
-                    </a>
-                    <a href="{{ route('admin.dosen-pembimbing.index') }}" class="flex items-center gap-2 pl-12 pr-4 py-2 text-sm hover:bg-slate-700 {{ request()->routeIs('admin.dosen-pembimbing.*') ? 'text-blue-400' : 'text-slate-300' }}">
-                        <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Dosen Pembimbing
                     </a>
                     <a href="{{ route('admin.mahasiswa.index') }}" class="flex items-center gap-2 pl-12 pr-4 py-2 text-sm hover:bg-slate-700 {{ request()->routeIs('admin.mahasiswa.*') ? 'text-blue-400' : 'text-slate-300' }}">
                         <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Mahasiswa

@@ -21,6 +21,7 @@ class MahasiswaProfilController extends Controller
             'no_hp' => 'nullable',
             'alamat' => 'nullable',
             'password' => 'nullable|min:8|confirmed',
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
         /** @var \App\Models\User $user */
@@ -31,6 +32,7 @@ class MahasiswaProfilController extends Controller
         $mahasiswa->update([
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat,
+            'dosen_pembimbing' => $request->dosen_pembimbing,
         ]);
 
         if ($request->filled('password')) {

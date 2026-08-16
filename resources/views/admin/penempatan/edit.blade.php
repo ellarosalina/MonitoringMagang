@@ -49,18 +49,6 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium mb-1">Dosen Pembimbing</label>
-                <select name="dosen_pembimbing_id" class="w-full border rounded p-2">
-                    <option value="">-- Pilih Dosen Pembimbing --</option>
-                    @foreach ($dosenPembimbings as $dosenPembimbing)
-                        <option value="{{ $dosenPembimbing->id }}" {{ old('dosen_pembimbing_id', $penempatan->dosen_pembimbing_id) == $dosenPembimbing->id ? 'selected' : '' }}>
-                            {{ $dosenPembimbing->nama }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-4">
                 <label class="block font-medium mb-1">Periode</label>
                <input type="text" name="periode" value="{{ old('periode', $penempatan->periode) }}" class="w-full border rounded p-2" required>
             </div>

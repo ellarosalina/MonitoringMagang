@@ -26,4 +26,9 @@ class GuruPamong extends Model
     {
         return $this->belongsTo(Sekolah::class);
     }
+
+     public function penempatans()
+    {
+        return $this->hasMany(Penempatan::class);
+    }
 }

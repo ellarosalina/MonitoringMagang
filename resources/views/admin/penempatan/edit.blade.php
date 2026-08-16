@@ -1,4 +1,4 @@
-<x-layouts.admin title="Edit Penempatan" subtitle="Ubah data penempatan magang">
+< title="Edit Penempatan" subtitle="Ubah data penempatan magang">
 
     @if ($errors->any())
         <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
@@ -91,5 +91,36 @@
             </div>
         </form>
     </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            const allGuruPamongs = @json($guruPamongs->map(fn($g) => ['id' => (string) $g->id, 'name' => $g->user->name, 'sekolah_id' => (string) $g->sekolah_id]));
+            const guruPamongTerpilih = "{{ $penempatan->guru_pamong_id }}";
+
+            const sekolahSelect = document.querySelector('select[name="sekolah_id"]');
+
+            function filterGuruPamong(preselect) {
+                const sekolahId = sekolahSelect.value;
+                const filtered = allGuruPamongs.filter(function (g) {
+                    return g.sekolah_id === sekolahId;
+                });
+
+                const choicesData = filtered.length
+                    ? filtered.map(function (g) { return { value: g.id, label: g.name, selected: preselect && g.id === guruPamongTerpilih }; })
+                    : [{ value: '', label: '-- Tidak ada guru pamong di sekolah ini --', disabled: true }];
+
+                const instance = window.choicesInstances && window.choicesInstances['guru_pamong_id'];
+                if (instance) {
+                    instance.clearStore();
+                    instance.setChoices(choicesData, 'value', 'label', true);
+                }
+            }
+
+            if (sekolahSelect) {
+                filterGuruPamong(true);
+                sekolahSelect.addEventListener('change', function () { filterGuruPamong(false); });
+            }
+        });
+    </script>
 
 </x-layouts.admin>

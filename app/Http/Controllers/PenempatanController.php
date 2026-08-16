@@ -42,18 +42,25 @@ class PenempatanController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+       $request->validate([
             'mahasiswa_id' => 'required|exists:mahasiswas,id',
             'sekolah_id' => 'required|exists:sekolahs,id',
             'guru_pamong_id' => 'required|exists:guru_pamongs,id',
-            'dosen_pembimbing_id' =>'nullable|exists:dosen_pembimbings,id',
-            'periode' =>'required|string|max:100','tanggal_mulai' =>'required|date',
-            'tanggal_selesai' =>'required|date|after_or_equal:tanggal_mulai',
-            'status' =>'required|in:menunggu,berjalan,selesai,dibatalkan',
+            'dosen_pembimbing_id' => 'nullable|exists:dosen_pembimbings,id',
+            'periode' => 'required',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'status' => 'required|in:menunggu,berjalan,selesai,dibatalkan',
         ]);
 
-        Penempatan::create($validated);
+        $guruPamong = \App\Models\GuruPamong::find($request->guru_pamong_id);
+        if ($guruPamong->sekolah_id != $request->sekolah_id) {
+            return back()->withInput()->withErrors([
+                'guru_pamong_id' => 'Guru pamong yang dipilih tidak mengajar di sekolah yang dipilih.',
+            ]);
+        }
 
+        Penempatan::create($request->all());
         return redirect()
             ->route('admin.penempatan.index')
             ->with('success','Data penempatan berhasil ditambahkan.');

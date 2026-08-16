@@ -13,6 +13,9 @@ use App\Http\Controllers\MahasiswaProfilController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\AdminProfilController;
+use App\Http\Controllers\GuruPamongMahasiswaController;
+use App\Http\Controllers\GuruPamongLogbookController;
+use App\Http\Controllers\GuruPamongProfilController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -48,6 +51,13 @@ Route::middleware(['auth'])->group(function () {
     // Khusus Guru Pamong
     Route::middleware(['role:guru_pamong'])->prefix('guru-pamong')->name('guru-pamong.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'guruPamong'])->name('dashboard');
+        Route::get('/mahasiswa', [GuruPamongMahasiswaController::class, 'index'])->name('mahasiswa.index');
+        Route::get('/logbook', [GuruPamongLogbookController::class, 'index'])->name('logbook.index');
+        Route::get('/logbook', [GuruPamongLogbookController::class, 'index'])->name('logbook.index');
+        Route::put('/logbook/{logbook}/approve', [GuruPamongLogbookController::class, 'approve'])->name('logbook.approve');
+        Route::put('/logbook/{logbook}/revisi', [GuruPamongLogbookController::class, 'revisi'])->name('logbook.revisi');
+        Route::get('/profil', [GuruPamongProfilController::class, 'index'])->name('profil.index');
+        Route::put('/profil', [GuruPamongProfilController::class, 'update'])->name('profil.update');
     });
 
     // Khusus Mahasiswa

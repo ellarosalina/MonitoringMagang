@@ -120,9 +120,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
+        window.choicesInstances = {};
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.searchable-select').forEach(function (el) {
-                new Choices(el, {
+                window.choicesInstances[el.name] = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
                     shouldSort: false,

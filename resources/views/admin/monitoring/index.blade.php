@@ -1,9 +1,14 @@
 <x-layouts.admin title="Monitoring Magang" subtitle="Pantau progress seluruh mahasiswa magang">
 
+    <a href="{{ route('admin.monitoring.export') }}" class="inline-block mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+        Export ke Excel
+    </a>
+
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
         <table class="w-full text-left">
             <thead class="bg-gray-50 border-b">
                 <tr>
+                    <th class="p-3 text-sm font-semibold text-gray-600 w-12">No</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Mahasiswa</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Sekolah</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Periode</th>
@@ -17,6 +22,7 @@
             <tbody>
                 @forelse ($penempatans as $penempatan)
                     <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 text-sm">{{ $loop->iteration + ($penempatans->currentPage() - 1) * $penempatans->perPage() }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->mahasiswa->user->name }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->sekolah->nama_sekolah }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->periode }}</td>
@@ -55,6 +61,11 @@
                     </tr>
                 @endforelse
             </tbody>
+            <tfoot>
+                <tr class="bg-gray-50 border-t font-semibold">
+                    <td colspan="9" class="p-3 text-sm">Total: {{ $penempatans->total() }}</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 

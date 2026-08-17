@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penempatan;
+use App\Exports\MonitoringExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MonitoringController extends Controller
 {
@@ -43,5 +45,10 @@ class MonitoringController extends Controller
         $logbooks = $penempatan->logbooks()->orderBy('tanggal', 'desc')->get();
 
         return view('admin.monitoring.show', compact('penempatan', 'absensiPerStatus', 'logbookPerStatus', 'logbooks'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new MonitoringExport, 'rekap-monitoring-magang-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

@@ -39,8 +39,13 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('mahasiswa', MahasiswaController::class);
         Route::resource('penempatan', PenempatanController::class);
         Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+        Route::get('/monitoring/export', [MonitoringController::class, 'export'])->name('monitoring.export');
         Route::get('/monitoring/{penempatan}', [MonitoringController::class, 'show'])->name('monitoring.show');
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
         Route::get('/profil', [AdminProfilController::class, 'index'])->name('profil.index');
         Route::put('/profil', [AdminProfilController::class, 'update'])->name('profil.update');

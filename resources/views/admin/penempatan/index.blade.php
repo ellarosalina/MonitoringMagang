@@ -14,6 +14,7 @@
         <table class="w-full text-left">
             <thead class="bg-gray-50 border-b">
                 <tr>
+                    <th class="p-3 text-sm font-semibold text-gray-600 w-12">No</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Mahasiswa</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Sekolah</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Guru Pamong</th>
@@ -25,6 +26,7 @@
             <tbody>
                 @forelse ($penempatans as $penempatan)
                     <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 text-sm">{{ $loop->iteration + ($penempatans->currentPage() - 1) * $penempatans->perPage() }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->mahasiswa->user->name }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->sekolah->nama_sekolah }}</td>
                         <td class="p-3 text-sm">{{ $penempatan->guruPamong->user->name }}</td>
@@ -54,6 +56,11 @@
                     </tr>
                 @endforelse
             </tbody>
+            <tfoot>
+                <tr class="bg-gray-50 border-t font-semibold">
+                    <td colspan="7" class="p-3 text-sm">Total: {{ $penempatans->total() }}</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 

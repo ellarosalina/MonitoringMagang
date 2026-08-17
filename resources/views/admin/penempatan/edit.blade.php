@@ -1,4 +1,4 @@
-< title="Edit Penempatan" subtitle="Ubah data penempatan magang">
+<x-layouts.admin title="Edit Penempatan" subtitle="Ubah data penempatan magang">
 
     @if ($errors->any())
         <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
@@ -50,7 +50,7 @@
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Periode</label>
-               <input type="text" name="periode" value="{{ old('periode', $penempatan->periode) }}" class="w-full border rounded p-2" required>
+                <input type="text" name="periode" value="{{ old('periode', $penempatan->periode) }}" class="w-full border rounded p-2" required>
             </div>
 
             <div class="mb-4">

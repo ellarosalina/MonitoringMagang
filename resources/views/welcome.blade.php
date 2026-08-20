@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SIM MagangGTK - Disdik Jabar</title>
+    <title>SIM Magang Mahasiswa - Disdik Jabar</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -27,16 +27,11 @@
             overflow: hidden;
         }
 
-
-        /* =====================================================
-           NAVBAR
-        ===================================================== */
-
+        /* NAVBAR */
         .navbar {
             max-width: 1200px;
             margin: auto;
             padding: 20px 30px;
-
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -46,7 +41,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-
             color: white;
             text-decoration: none;
             font-size: 20px;
@@ -67,7 +61,6 @@
         .nav-buttons a {
             padding: 10px 22px;
             border-radius: 8px;
-
             text-decoration: none;
             font-size: 14px;
             font-weight: bold;
@@ -92,18 +85,12 @@
             background: #ffd447;
         }
 
-
-        /* =====================================================
-           HERO
-           DESKTOP / LAPTOP - TETAP
-        ===================================================== */
-
+        /* KHUSUS DESTOP LAPTOP */
         .hero {
             max-width: 1200px;
             height: calc(100vh - 85px);
             margin: auto;
             padding: 30px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -116,7 +103,6 @@
 
         .subtitle {
             margin-bottom: 15px;
-
             font-size: 15px;
             font-weight: bold;
             letter-spacing: 2px;
@@ -124,7 +110,6 @@
 
         .hero h1 {
             margin: 0 0 20px;
-
             font-size: 52px;
             line-height: 1.1;
         }
@@ -135,17 +120,12 @@
 
         .description {
             max-width: 560px;
-
             font-size: 16px;
             line-height: 1.7;
-
             color: #e5f5ff;
         }
 
-
-        /* =====================================================
-           LOGO
-        ===================================================== */
+        /* LOGO */
 
         .logo-container {
             width: 40%;
@@ -157,16 +137,12 @@
         .logo-box {
             width: 350px;
             height: 350px;
-
             padding: 40px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             background: white;
             border-radius: 30px;
-
             box-shadow: 0 20px 50px rgba(0, 0, 0, .18);
         }
 
@@ -175,11 +151,7 @@
             max-width: 270px;
         }
 
-
-        /* =====================================================
-           FOOTER
-        ===================================================== */
-
+        /* FOOTER */
         .footer {
             position: absolute;
             bottom: 15px;
@@ -191,11 +163,7 @@
             color: rgba(255, 255, 255, .75);
         }
 
-
-        /* =====================================================
-           TABLET
-           501px - 850px
-        ===================================================== */
+        /* KHUSUS TABLET */
 
         @media (max-width: 850px) {
 
@@ -231,17 +199,9 @@
             }
         }
 
-
-        /* =====================================================
-           HP
-           KHUSUS <= 500px
-        ===================================================== */
+        /* KHUSUS HP */
 
         @media (max-width: 500px) {
-
-            /*
-             * NAVBAR HP
-             */
 
             .navbar {
                 padding: 12px 12px;
@@ -267,157 +227,86 @@
                 border-radius: 8px;
             }
 
-
-            /*
-             * HERO HP
-             *
-             * Dibuat vertikal seperti sebelumnya.
-             * Logo turun ke bawah.
-             */
-
             .hero {
                 height: auto;
-
-                /*
-                 * Jangan pakai min-height 100vh
-                 * supaya isi tidak dipaksa terlalu panjang.
-                 */
-
                 min-height: 0;
-
                 margin: 0;
-
                 padding: 45px 18px 80px;
-
                 display: flex;
-
                 flex-direction: column;
-
                 align-items: center;
-
                 justify-content: flex-start;
-
                 gap: 35px;
-
                 text-align: center;
             }
 
-
-            /*
-             * TEXT HP
-             */
-
+            /* TEXT HP */
             .hero-content {
                 width: 100%;
-
                 display: flex;
-
                 flex-direction: column;
-
                 align-items: center;
             }
 
             .subtitle {
                 margin-bottom: 14px;
-
                 font-size: 14px;
-
                 line-height: 1.5;
-
                 letter-spacing: 1.8px;
             }
 
             .hero h1 {
                 margin: 0 0 16px;
-
                 font-size: 32px;
-
                 line-height: 1.08;
             }
 
             .description {
                 max-width: 360px;
-
                 margin: 0;
-
                 font-size: 14px;
-
                 line-height: 1.7;
             }
 
 
-            /*
-             * LOGO HP
-             *
-             * Logo boleh turun ke bawah,
-             * tetapi dibuat lebih kecil agar tidak
-             * menabrak footer.
-             */
-
+            /* LOGO DI HP */
             .logo-container {
                 width: 100%;
-
                 display: flex;
-
                 justify-content: center;
-
                 align-items: center;
-
                 padding: 0;
-
                 margin: 0;
             }
 
             .logo-box {
                 width: 220px;
-
                 height: 220px;
-
                 padding: 25px;
-
                 border-radius: 28px;
-
                 box-shadow: 0 15px 35px rgba(0, 0, 0, .16);
             }
 
             .logo-box img {
                 width: 100%;
-
                 max-width: 170px;
             }
 
-
-            /*
-             * FOOTER HP
-             */
-
+            /* FOOTER HP */
             .footer {
                 position: fixed;
-
                 bottom: 8px;
-
                 left: 0;
-
                 width: 100%;
-
                 padding: 0 10px;
-
                 text-align: center;
-
                 font-size: 9px;
-
                 line-height: 1.4;
-
                 z-index: 10;
             }
         }
 
-
-        /* =====================================================
-           HP KECIL
-           <= 360px
-        ===================================================== */
-
+        /* HP KECIL */
         @media (max-width: 360px) {
 
             .navbar {
@@ -443,58 +332,33 @@
                 font-size: 10px;
             }
 
-
-            /*
-             * HERO
-             */
-
             .hero {
                 padding: 38px 14px 75px;
-
                 gap: 28px;
             }
 
-
-            /*
-             * TEXT
-             */
-
             .subtitle {
                 font-size: 11px;
-
                 letter-spacing: 1.2px;
-
                 margin-bottom: 10px;
             }
 
             .hero h1 {
                 font-size: 27px;
-
                 line-height: 1.08;
-
                 margin-bottom: 13px;
             }
 
             .description {
                 max-width: 310px;
-
                 font-size: 12px;
-
                 line-height: 1.6;
             }
 
-
-            /*
-             * LOGO
-             */
-
             .logo-box {
                 width: 180px;
-
                 height: 180px;
-
                 padding: 20px;
-
                 border-radius: 24px;
             }
 
@@ -502,14 +366,8 @@
                 max-width: 140px;
             }
 
-
-            /*
-             * FOOTER
-             */
-
             .footer {
                 bottom: 5px;
-
                 font-size: 8px;
             }
         }
@@ -517,79 +375,39 @@
     </style>
 </head>
 
-
 <body>
 
 <div class="home">
 
-
-    <!-- =====================================================
-         NAVBAR
-    ====================================================== -->
+      {{-- NAVBAR --}}
 
     <nav class="navbar">
-
         <a href="{{ url('/') }}" class="brand">
-
             <img
                 src="{{ asset('images/logo-disdik-jabar.png') }}"
-                alt="Logo Disdik Jabar"
-            >
-
-            <span>
-                SIM MagangGTK
-            </span>
-
+                alt="Logo Disdik Jabar">
+            <span>SIM Magang Mahasiswa</span>
         </a>
 
-
         <div class="nav-buttons">
-
-            <a
-                href="{{ route('login') }}"
-                class="login"
-            >
-                Masuk
-            </a>
-
+            <a href="{{ route('login') }}"
+                class="login">Masuk</a>
 
             @if (Route::has('register'))
-
-                <a
-                    href="{{ route('register') }}"
-                    class="register"
-                >
-                    Daftar
-                </a>
-
+                <a href="{{ route('register') }}"
+                    class="register">Daftar</a>
             @endif
 
         </div>
 
     </nav>
 
-
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
-
+    {{-- HERO --}}
     <section class="hero">
-
-
         <!-- TEXT -->
-
         <div class="hero-content">
-
-            <div class="subtitle">
-                DINAS PENDIDIKAN JAWA BARAT
-            </div>
-
-
-            <h1>
-                Sistem Informasi<br>
-                Monitoring <span>MagangGTK</span>
-            </h1>
-
+            <div class="subtitle">DINAS PENDIDIKAN JAWA BARAT</div>
+            <h1>Sistem Informasi<br>Monitoring <span>Magang Mahasiswa</span></h1>
 
             <p class="description">
                 Platform digital untuk membantu mahasiswa,
@@ -597,40 +415,24 @@
                 kegiatan magang secara terintegrasi,
                 mulai dari absensi hingga logbook.
             </p>
-
         </div>
-
 
         <!-- LOGO -->
-
         <div class="logo-container">
-
             <div class="logo-box">
-
                 <img
                     src="{{ asset('images/logo-disdik-jabar.png') }}"
-                    alt="Logo Disdik Jabar"
-                >
-
+                    alt="Logo Disdik Jabar">
             </div>
-
         </div>
-
     </section>
 
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
+    {{-- FOOTER --}}
     <footer class="footer">
-
-        © {{ date('Y') }} SIM MagangGTK —
+        © {{ date('Y') }} SIM Magang Mahasiswa —
         Dinas Pendidikan Jawa Barat
-
     </footer>
-
-
 </div>
 
 </body>

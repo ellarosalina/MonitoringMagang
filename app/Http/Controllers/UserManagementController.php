@@ -21,7 +21,9 @@ class UserManagementController extends Controller
 
         $users = $query->latest()->paginate(15)->appends(['role' => $role]);
 
-        return view('admin.users.index', compact('users', 'role'));
+        $sekolahs = \App\Models\Sekolah::where('status', 'aktif')->get();
+
+        return view('admin.users.index', compact('users', 'role', 'sekolahs'));
     }
 
     public function create()
@@ -57,12 +59,8 @@ class UserManagementController extends Controller
         return view('admin.users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+        public function update(Request $request, User $user)
     {
-        if (!$user->hasRole('admin_gtk')) {
-            abort(403, 'Hanya akun Admin GTK yang dapat diedit dari halaman ini.');
-        }
-
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -80,7 +78,7 @@ class UserManagementController extends Controller
 
         $user->update($userData);
 
-        return redirect()->route('admin.users.index')->with('success', 'Akun Admin GTK berhasil diperbarui.');
+        return redirect()->route('admin.users.index')->with('success', 'Akun berhasil diperbarui.');
     }
 
     public function destroy(User $user)

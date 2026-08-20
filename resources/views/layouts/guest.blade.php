@@ -292,22 +292,9 @@
                     <img
                         src="{{ asset('images/logo-disdik-jabar.png') }}"
                         alt="Logo Dinas Pendidikan Jawa Barat"
-                        class="logo-disdik"
-                    >
-
-                </div>
-
-
-                <div class="welcome-label">
-                    Selamat Datang
-                </div>
-
-
-                <h1 class="app-title">
-                    SIM MagangGTK
-                </h1>
-
-
+                        class="logo-disdik"></div>
+                <div class="welcome-label">Selamat Datang</div>
+                <h1 class="app-title">SIM Magang Mahasiswa</h1>
                 <p class="app-description">
                     Sistem Informasi Monitoring Magang
                     untuk membantu pengelolaan kegiatan
@@ -316,41 +303,16 @@
 
 
                 <div class="features">
-
                     <div class="feature">
-
-                        <span class="feature-dot"></span>
-
-                        Monitoring kegiatan magang
-
-                    </div>
-
-
+                        <span class="feature-dot"></span>Monitoring kegiatan magang</div>
                     <div class="feature">
-
-                        <span class="feature-dot"></span>
-
-                        Pengelolaan absensi dan logbook
-
-                    </div>
-
-
+                        <span class="feature-dot"></span>Pengelolaan absensi dan logbook</div>
                     <div class="feature">
-
-                        <span class="feature-dot"></span>
-
-                        Terintegrasi dengan Disdik Jawa Barat
-
-                    </div>
-
+                        <span class="feature-dot"></span>Terintegrasi dengan Disdik Jawa Barat</div>
                 </div>
-
             </div>
 
-
-            {{-- ============================== --}}
-            {{-- BAGIAN KANAN                   --}}
-            {{-- ============================== --}}
+            {{-- BAGIAN KANAN --}}
 
             <div class="login-right">
 

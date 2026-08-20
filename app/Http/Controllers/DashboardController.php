@@ -71,8 +71,32 @@ class DashboardController extends Controller
         return view('dashboards.guru-pamong');
     }
 
-    public function mahasiswa()
+        public function mahasiswa()
     {
-        return view('dashboards.mahasiswa');
+        $mahasiswa = Auth::user()->mahasiswa;
+        $penempatan = $mahasiswa->penempatans()->latest()->first();
+
+        if (!$penempatan) {
+            return view('dashboards.mahasiswa', ['penempatan' => null]);
+        }
+
+        $hariMagang = now()->diffInDays($penempatan->tanggal_mulai) >= 0 && now()->gt($penempatan->tanggal_mulai)
+            ? $penempatan->tanggal_mulai->diffInDays(now()->lt($penempatan->tanggal_selesai) ? now() : $penempatan->tanggal_selesai) + 1
+            : 0;
+
+        $totalAbsensi = $penempatan->absensis()->count();
+        $hadirCount = $penempatan->absensis()->where('status', 'hadir')->count();
+        $persenKehadiran = $totalAbsensi > 0 ? round(($hadirCount / $totalAbsensi) * 100) : 0;
+
+        $totalLogbook = $penempatan->logbooks()->count();
+        $logbookDisetujui = $penempatan->logbooks()->where('status_verifikasi', 'disetujui')->count();
+
+        return view('dashboards.mahasiswa', [
+            'penempatan' => $penempatan,
+            'hariMagang' => $hariMagang,
+            'persenKehadiran' => $persenKehadiran,
+            'totalLogbook' => $totalLogbook,
+            'logbookDisetujui' => $logbookDisetujui,
+        ]);
     }
 }

@@ -39,17 +39,28 @@
                         >
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block font-medium mb-1">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-800 mb-2">
                             Kegiatan
                         </label>
-
+                        <input
+                        type="text"
+                        name="kegiatan"
+                        value="{{ old('kegiatan') }}"
+                        placeholder="Contoh: Sosialisasi Kebijakan Baru"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 focus:border-blue-500 focus:ring-blue-500"
+                        required>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <label class="block text-sm font-medium text-gray-800 mb-2">Detail Kegiatan</label>
                         <textarea
-                            name="kegiatan"
-                            rows="5"
-                            class="w-full border border-gray-300 rounded-lg p-2"
-                            placeholder="Ceritakan kegiatan yang dilakukan hari ini..."
-                        >{{ old('kegiatan') }}</textarea>
+                        name="detail_kegiatan"
+                        rows="6"
+                        placeholder="Jelaskan secara lengkap kegiatan yang dilakukan hari ini..."
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 focus:border-blue-500 focus:ring-blue-500"
+                        >{{ old('detail_kegiatan') }}</textarea>
+                        <p class="text-xs text-gray-500 mt-2">Jelaskan aktivitas, tugas yang dikerjakan, dan hasil kegiatan.</p>
                     </div>
 
                     <div class="mb-4">

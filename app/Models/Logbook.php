@@ -13,6 +13,7 @@ class Logbook extends Model
         'penempatan_id',
         'tanggal',
         'kegiatan',
+        'detail_kegiatan',
         'dokumentasi',
         'status_verifikasi',
         'catatan_guru_pamong',

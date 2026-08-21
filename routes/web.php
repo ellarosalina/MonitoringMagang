@@ -22,18 +22,14 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-
-    // Dashboard umum: otomatis redirect sesuai role user yang login
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Khusus Admin GTK
     Route::middleware(['role:admin_gtk'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
-        
+        Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');    
         Route::resource('sekolah', SekolahController::class);
         Route::resource('guru-pamong', GuruPamongController::class);
         Route::resource('mahasiswa', MahasiswaController::class);
@@ -66,13 +62,11 @@ Route::middleware(['auth'])->group(function () {
     // Khusus Mahasiswa
     Route::middleware(['role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'mahasiswa'])->name('dashboard');
-
         Route::get('/absensi', [MahasiswaAbsensiController::class, 'index'])->name('absensi.index');
         Route::get('/absensi/create', [MahasiswaAbsensiController::class, 'create'])->name('absensi.create');
         Route::post('/absensi', [MahasiswaAbsensiController::class, 'store'])->name('absensi.store');
         Route::get('/absensi/{absensi}/edit', [MahasiswaAbsensiController::class, 'edit'])->name('absensi.edit');
         Route::put('/absensi/{absensi}', [MahasiswaAbsensiController::class, 'update'])->name('absensi.update');
-
         Route::get('/logbook', [MahasiswaLogbookController::class, 'index'])->name('logbook.index');
         Route::get('/logbook/create', [MahasiswaLogbookController::class, 'create'])->name('logbook.create');
         Route::post('/logbook', [MahasiswaLogbookController::class, 'store'])->name('logbook.store');

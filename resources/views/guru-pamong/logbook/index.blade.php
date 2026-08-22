@@ -1,67 +1,679 @@
-<x-layouts.guru-pamong title="Verifikasi Logbook" subtitle="Pantau dan verifikasi logbook mahasiswa bimbingan">
+<x-layouts.guru-pamong title="Verifikasi Logbook" subtitle="Pantau, lihat, dan verifikasi logbook mahasiswa bimbingan">
 
     @if (session('success'))
-        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
+        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
             {{ session('success') }}
         </div>
     @endif
 
-    <div class="space-y-3">
-        @forelse ($logbooks as $logbook)
-            <div class="bg-white border rounded-lg p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <span class="font-semibold">{{ $logbook->penempatan->mahasiswa->user->name }}</span>
-                        <span class="text-sm text-gray-500">— {{ \Carbon\Carbon::parse($logbook->tanggal)->format('d M Y') }}</span>
-                    </div>
-                    <span class="px-2 py-1 text-xs rounded
-                        @if($logbook->status_verifikasi == 'disetujui') bg-green-100 text-green-700
-                        @elseif($logbook->status_verifikasi == 'revisi') bg-red-100 text-red-700
-                        @else bg-yellow-100 text-yellow-700
-                        @endif">
-                        {{ ucfirst($logbook->status_verifikasi) }}
-                    </span>
-                </div>
-                <p class="text-sm text-gray-700 mb-2">{{ $logbook->kegiatan }}</p>
+    @if (session('error'))
+        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            {{ session('error') }}
+        </div>
+    @endif
 
-                @if ($logbook->dokumentasi)
-                    <img src="{{ Storage::url($logbook->dokumentasi) }}" alt="Dokumentasi" class="w-32 rounded border mb-2">
-                @endif
+    @if ($errors->any())
+        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            <ul class="list-disc list-inside text-sm">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-                @if ($logbook->catatan_guru_pamong)
-                    <p class="text-xs text-gray-500 mb-2"><strong>Catatan Anda:</strong> {{ $logbook->catatan_guru_pamong }}</p>
-                @endif
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 
-                @if ($logbook->status_verifikasi === 'menunggu')
-                    <div class="flex gap-2 items-center mt-3 pt-3 border-t" x-data="{ showRevisi: false }">
-                        <form action="{{ route('guru-pamong.logbook.approve', $logbook->id) }}" method="POST" onsubmit="return confirm('Setujui logbook ini?')">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700">Setujui</button>
-                        </form>
+    <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
 
-                        <button type="button" @click="showRevisi = !showRevisi" class="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700">
-                            Minta Revisi
-                        </button>
+        <div class="px-6 py-5 border-b">
+            <h2 class="text-lg font-semibold text-gray-800">
+                Daftar Logbook Mahasiswa
+            </h2>
 
-                        <div x-show="showRevisi" x-cloak class="w-full mt-2">
-                            <form action="{{ route('guru-pamong.logbook.revisi', $logbook->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <textarea name="catatan_guru_pamong" class="w-full border rounded p-2 text-sm" placeholder="Tulis alasan/catatan revisi..." required></textarea>
-                                <button type="submit" class="mt-2 px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700">Kirim Revisi</button>
-                            </form>
-                        </div>
-                    </div>
-                @endif
+            <p class="text-sm text-gray-500 mt-1">
+                Pantau, lihat, dan verifikasi logbook mahasiswa bimbingan.
+            </p>
+        </div>
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-sm">
+
+                <thead>
+                    <tr class="bg-gray-50 border-b">
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            NO
+                        </th>
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            MAHASISWA
+                        </th>
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            TANGGAL
+                        </th>
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            KEGIATAN
+                        </th>
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            DOKUMENTASI
+                        </th>
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            STATUS
+                        </th>
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            CATATAN
+                        </th>
+
+                        <th class="px-5 py-4 text-left font-semibold text-gray-700">
+                            AKSI
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @forelse ($logbooks as $index => $logbook)
+
+                        <tr class="border-b hover:bg-gray-50">
+
+                            <td class="px-5 py-4 text-gray-600 align-top">
+                                {{ $logbooks->firstItem() + $index }}
+                            </td>
+
+
+                            <td class="px-5 py-4 align-top">
+
+                                <div class="font-semibold text-gray-800">
+                                    {{ $logbook->penempatan->mahasiswa->user->name }}
+                                </div>
+
+                            </td>
+
+
+                            <td class="px-5 py-4 align-top">
+
+                                <div class="font-medium text-gray-800">
+                                    {{ \Carbon\Carbon::parse($logbook->tanggal)->locale('id')->translatedFormat('l') }}
+                                </div>
+
+                                <div class="text-xs text-gray-500 mt-1">
+                                    {{ \Carbon\Carbon::parse($logbook->tanggal)->format('d M Y') }}
+                                </div>
+
+                            </td>
+
+
+                            <td class="px-5 py-4 align-top">
+
+                                <div class="font-semibold text-gray-800">
+                                    {{ $logbook->kegiatan }}
+                                </div>
+
+                                @if ($logbook->detail_kegiatan)
+
+                                    <div class="text-xs text-gray-500 mt-1 max-w-xs">
+                                        {{ \Illuminate\Support\Str::limit($logbook->detail_kegiatan, 100) }}
+                                    </div>
+
+                                @endif
+
+                            </td>
+
+
+                            <td class="px-5 py-4 align-top">
+
+                                @if ($logbook->dokumentasi)
+
+                                    <div class="w-20 h-16 border rounded-lg bg-gray-50 overflow-hidden flex items-center justify-center">
+
+                                        <img
+                                            src="{{ Storage::url($logbook->dokumentasi) }}"
+                                            alt="Dokumentasi"
+                                            class="w-full h-full object-contain"
+                                        >
+
+                                    </div>
+
+                                @else
+
+                                    <span class="text-xs text-gray-400">
+                                        Tidak ada
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            <td class="px-5 py-4 align-top">
+
+                                @if ($logbook->status_verifikasi === 'disetujui')
+
+                                    <span class="inline-flex px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                                        Disetujui
+                                    </span>
+
+                                @elseif ($logbook->status_verifikasi === 'revisi')
+
+                                    <span class="inline-flex px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                                        Revisi
+                                    </span>
+
+                                @else
+
+                                    <span class="inline-flex px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
+                                        Menunggu
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            <td class="px-5 py-4 align-top">
+
+                                @if ($logbook->catatan_guru_pamong)
+
+                                    <div class="text-xs text-gray-600 max-w-xs">
+                                        {{ \Illuminate\Support\Str::limit($logbook->catatan_guru_pamong, 80) }}
+                                    </div>
+
+                                @else
+
+                                    <span class="text-xs text-gray-400">
+                                        -
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            <td class="px-5 py-4 align-top">
+
+                                <div
+                                    x-data="{
+                                        showDetail: false,
+                                        showVerifikasi: false,
+                                        catatan: @js($logbook->catatan_guru_pamong ?? '')
+                                    }"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="showDetail = true"
+                                        class="w-full px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-200"
+                                    >
+                                        Lihat
+                                    </button>
+
+
+                                    <div
+                                        x-show="showDetail"
+                                        x-cloak
+                                        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+                                        @keydown.escape.window="showDetail = false"
+                                    >
+
+                                        <div
+                                            class="bg-white rounded-xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col"
+                                            @click.stop
+                                        >
+
+                                            <div class="flex items-center justify-between px-6 py-4 border-b">
+
+                                                <div>
+
+                                                    <h3 class="text-lg font-semibold text-gray-800">
+                                                        Detail Logbook
+                                                    </h3>
+
+                                                    <p class="text-sm text-gray-500 mt-1">
+                                                        {{ $logbook->penempatan->mahasiswa->user->name }}
+                                                    </p>
+
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    @click="showDetail = false"
+                                                    class="text-gray-400 hover:text-gray-700 text-2xl leading-none"
+                                                >
+                                                    ×
+                                                </button>
+
+                                            </div>
+
+
+                                            <div class="px-6 py-5 overflow-y-auto">
+
+                                                <div class="space-y-5">
+
+
+                                                    <div>
+
+                                                        <p class="text-xs font-medium text-gray-400 uppercase mb-1">
+                                                            Tanggal
+                                                        </p>
+
+                                                        <p class="text-sm font-semibold text-gray-800">
+                                                            {{ \Carbon\Carbon::parse($logbook->tanggal)->locale('id')->translatedFormat('l, d F Y') }}
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <p class="text-xs font-medium text-gray-400 uppercase mb-1">
+                                                            Kegiatan
+                                                        </p>
+
+                                                        <p class="text-sm font-semibold text-gray-800">
+                                                            {{ $logbook->kegiatan }}
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <p class="text-xs font-medium text-gray-400 uppercase mb-2">
+                                                            Detail Kegiatan
+                                                        </p>
+
+                                                        @if ($logbook->detail_kegiatan)
+
+                                                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+
+                                                                <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                                                                    {{ $logbook->detail_kegiatan }}
+                                                                </p>
+
+                                                            </div>
+
+                                                        @else
+
+                                                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+
+                                                                <p class="text-sm text-gray-400">
+                                                                    Tidak ada detail kegiatan.
+                                                                </p>
+
+                                                            </div>
+
+                                                        @endif
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <p class="text-xs font-medium text-gray-400 uppercase mb-2">
+                                                            Dokumentasi
+                                                        </p>
+
+                                                        @if ($logbook->dokumentasi)
+
+                                                            <div class="border border-gray-200 rounded-lg bg-gray-50 p-2 w-fit">
+
+                                                                <img
+                                                                    src="{{ Storage::url($logbook->dokumentasi) }}"
+                                                                    alt="Dokumentasi Logbook"
+                                                                    class="w-52 h-40 object-contain rounded-lg"
+                                                                >
+
+                                                            </div>
+
+                                                        @else
+
+                                                            <div class="border border-gray-200 rounded-lg bg-gray-50 p-3">
+
+                                                                <p class="text-sm text-gray-400">
+                                                                    Tidak ada dokumentasi.
+                                                                </p>
+
+                                                            </div>
+
+                                                        @endif
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <p class="text-xs font-medium text-gray-400 uppercase mb-2">
+                                                            Status Verifikasi
+                                                        </p>
+
+                                                        @if ($logbook->status_verifikasi === 'disetujui')
+
+                                                            <span class="inline-flex px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                                                                Disetujui
+                                                            </span>
+
+                                                        @elseif ($logbook->status_verifikasi === 'revisi')
+
+                                                            <span class="inline-flex px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                                                                Revisi
+                                                            </span>
+
+                                                        @else
+
+                                                            <span class="inline-flex px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
+                                                                Menunggu
+                                                            </span>
+
+                                                        @endif
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <p class="text-xs font-medium text-gray-400 uppercase mb-2">
+                                                            Catatan Guru Pamong
+                                                        </p>
+
+                                                        @if ($logbook->catatan_guru_pamong)
+
+                                                            <div class="bg-blue-50 border border-blue-100 rounded-lg p-3">
+
+                                                                <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                                                                    {{ $logbook->catatan_guru_pamong }}
+                                                                </p>
+
+                                                            </div>
+
+                                                        @else
+
+                                                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+
+                                                                <p class="text-sm text-gray-400">
+                                                                    Belum ada catatan.
+                                                                </p>
+
+                                                            </div>
+
+                                                        @endif
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="px-6 py-4 border-t bg-gray-50 flex justify-end gap-2">
+
+                                                <button
+                                                    type="button"
+                                                    @click="showDetail = false"
+                                                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300"
+                                                >
+                                                    Tutup
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    @click="showDetail = false; showVerifikasi = true"
+                                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 cursor-pointer"
+                                                >
+                                                    Verifikasi
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div
+                                        x-show="showVerifikasi"
+                                        x-cloak
+                                        class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+                                        @keydown.escape.window="showVerifikasi = false"
+                                    >
+
+                                        <div
+                                            class="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col"
+                                            @click.stop
+                                        >
+
+                                            <div class="flex items-center justify-between px-6 py-4 border-b">
+
+                                                <div>
+
+                                                    <h3 class="text-lg font-semibold text-gray-800">
+                                                        Verifikasi Logbook
+                                                    </h3>
+
+                                                    <p class="text-sm text-gray-500 mt-1">
+                                                        {{ $logbook->penempatan->mahasiswa->user->name }}
+                                                    </p>
+
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    @click="showVerifikasi = false; showDetail = true"
+                                                    class="text-gray-400 hover:text-gray-700 text-2xl leading-none"
+                                                >
+                                                    ×
+                                                </button>
+
+                                            </div>
+
+
+                                            <div class="px-6 py-5 overflow-y-auto">
+
+                                                <div class="mb-5">
+
+                                                    <p class="text-xs font-medium text-gray-400 uppercase mb-2">
+                                                        Status Saat Ini
+                                                    </p>
+
+                                                    @if ($logbook->status_verifikasi === 'disetujui')
+
+                                                        <span class="inline-flex px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                                                            Disetujui
+                                                        </span>
+
+                                                    @elseif ($logbook->status_verifikasi === 'revisi')
+
+                                                        <span class="inline-flex px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                                                            Revisi
+                                                        </span>
+
+                                                    @else
+
+                                                        <span class="inline-flex px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
+                                                            Menunggu
+                                                        </span>
+
+                                                    @endif
+
+                                                </div>
+
+
+                                                <div class="mb-5">
+
+                                                    <p class="text-xs font-medium text-gray-400 uppercase mb-2">
+                                                        Kegiatan
+                                                    </p>
+
+                                                    <p class="text-sm font-semibold text-gray-800">
+                                                        {{ $logbook->kegiatan }}
+                                                    </p>
+
+                                                </div>
+
+
+                                                <div class="mb-5">
+
+                                                    <p class="text-xs font-medium text-gray-400 uppercase mb-2">
+                                                        Detail Kegiatan
+                                                    </p>
+
+                                                    @if ($logbook->detail_kegiatan)
+
+                                                        <div class="bg-gray-50 border rounded-lg p-3">
+
+                                                            <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                                                                {{ $logbook->detail_kegiatan }}
+                                                            </p>
+
+                                                        </div>
+
+                                                    @else
+
+                                                        <p class="text-sm text-gray-400">
+                                                            Tidak ada detail kegiatan.
+                                                        </p>
+
+                                                    @endif
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                                        Catatan Guru Pamong
+                                                    </label>
+
+                                                    <textarea
+                                                        x-model="catatan"
+                                                        rows="5"
+                                                        maxlength="1000"
+                                                        class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        placeholder="Berikan catatan untuk mahasiswa..."
+                                                    ></textarea>
+
+                                                    <p class="text-xs text-gray-400 mt-1">
+                                                        Catatan akan ditampilkan kepada mahasiswa.
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="px-6 py-4 border-t bg-gray-50">
+
+                                                <form
+                                                    action="{{ route('guru-pamong.logbook.approve', $logbook->id) }}"
+                                                    method="POST"
+                                                    class="mb-2"
+                                                >
+
+                                                    @csrf
+                                                    @method('PUT')
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="catatan_guru_pamong"
+                                                        x-model="catatan"
+                                                    >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="w-full px-4 py-2.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+                                                    >
+                                                        ✓ Setujui Logbook
+                                                    </button>
+
+                                                </form>
+
+
+                                                <form
+                                                    action="{{ route('guru-pamong.logbook.revisi', $logbook->id) }}"
+                                                    method="POST"
+                                                    class="mb-2"
+                                                >
+
+                                                    @csrf
+                                                    @method('PUT')
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="catatan_guru_pamong"
+                                                        x-model="catatan"
+                                                    >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="w-full px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
+                                                    >
+                                                        ↻ Minta Revisi
+                                                    </button>
+
+                                                </form>
+
+
+                                                <button
+                                                    type="button"
+                                                    @click="showVerifikasi = false; showDetail = true"
+                                                    class="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300"
+                                                >
+                                                    Kembali ke Detail
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="px-5 py-10 text-center text-gray-500"
+                            >
+                                Belum ada logbook dari mahasiswa bimbingan.
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        @if ($logbooks->hasPages())
+
+            <div class="px-6 py-4 border-t">
+                {{ $logbooks->links() }}
             </div>
-        @empty
-            <p class="text-gray-500 text-center py-8">Belum ada logbook dari mahasiswa bimbingan.</p>
-        @endforelse
-    </div>
 
-    <div class="mt-4">
-        {{ $logbooks->links() }}
+        @endif
+
     </div>
 
 </x-layouts.guru-pamong>

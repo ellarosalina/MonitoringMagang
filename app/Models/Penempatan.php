@@ -50,22 +50,38 @@ class Penempatan extends Model
         return $this->hasMany(Logbook::class);
     }
 
-    public function getProgressPercentAttribute(): int
+    public function getHariSeharusnyaIsiAttribute(): int
     {
-        $mulai = $this->tanggal_mulai;
-        $selesai = $this->tanggal_selesai;
-        $hariIni = Carbon::now();
+        $mulai = $this->tanggal_mulai->copy()->startOfDay();
+        $selesai = $this->tanggal_selesai->copy()->startOfDay();
+        $hariIni = Carbon::now()->startOfDay();
 
         if ($hariIni->lt($mulai)) {
             return 0;
         }
 
-        $hariAcuan = $hariIni->gt($selesai) ? $selesai : $hariIni;
+        $akhir = $hariIni->gt($selesai) ? $selesai : $hariIni;
 
-        $hariSeharusnyaIsi = max(1, $mulai->diffInDays($hariAcuan) + 1);
+        $hari = 0;
+        $tanggal = $mulai->copy();
+        while ($tanggal->lte($akhir)) {
+            if ($tanggal->isWeekday()) {
+                $hari++;
+            }
+            $tanggal->addDay();
+        }
+
+        return max(1, $hari);
+    }
+
+    public function getProgressPercentAttribute(): int
+    {
+        if ($this->tanggal_mulai->gt(Carbon::now())) {
+            return 0;
+        }
 
         $jumlahLogbookTerisi = $this->logbooks()->count();
 
-        return (int) min(100, round(($jumlahLogbookTerisi / $hariSeharusnyaIsi) * 100));
+        return (int) min(100, round(($jumlahLogbookTerisi / $this->hari_seharusnya_isi) * 100));
     }
 }

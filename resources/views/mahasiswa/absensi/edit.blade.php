@@ -23,19 +23,35 @@
                     @csrf
                     @method('PUT')
 
+                    {{-- Hari --}}
+                    <div class="mb-4">
+                        <label class="block font-medium mb-1">
+                            Hari
+                        </label>
+
+                        <input
+                            type="text"
+                            value="{{ \Carbon\Carbon::parse($absensi->tanggal)->locale('id')->translatedFormat('l') }}"
+                            readonly
+                            class="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-700"
+                        >
+                    </div>
+
+                    {{-- Tanggal --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Tanggal
                         </label>
 
                         <input
-                            type="date"
-                            name="tanggal"
-                            value="{{ old('tanggal', $absensi->tanggal) }}"
-                            class="w-full border border-gray-300 rounded-lg p-2"
+                            type="text"
+                            value="{{ \Carbon\Carbon::parse($absensi->tanggal)->locale('id')->translatedFormat('d F Y') }}"
+                            readonly
+                            class="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-700"
                         >
                     </div>
 
+                    {{-- Status --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Status
@@ -44,6 +60,7 @@
                         <select
                             name="status"
                             class="w-full border border-gray-300 rounded-lg p-2"
+                            required
                         >
                             <option value="hadir" {{ $absensi->status == 'hadir' ? 'selected' : '' }}>
                                 Hadir
@@ -63,6 +80,7 @@
                         </select>
                     </div>
 
+                    {{-- Jam Masuk --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Jam Masuk
@@ -76,6 +94,7 @@
                         >
                     </div>
 
+                    {{-- Jam Pulang --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Jam Pulang
@@ -87,18 +106,6 @@
                             value="{{ old('jam_pulang', $absensi->jam_pulang) }}"
                             class="w-full border border-gray-300 rounded-lg p-2"
                         >
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block font-medium mb-1">
-                            Catatan (opsional)
-                        </label>
-
-                        <textarea
-                            name="catatan"
-                            rows="4"
-                            class="w-full border border-gray-300 rounded-lg p-2"
-                        >{{ old('catatan', $absensi->catatan) }}</textarea>
                     </div>
 
                     <div class="flex gap-2 mt-6">

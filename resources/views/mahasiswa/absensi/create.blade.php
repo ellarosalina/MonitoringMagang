@@ -22,19 +22,41 @@
                 <form action="{{ route('mahasiswa.absensi.store') }}" method="POST">
                     @csrf
 
+                    {{-- Hari --}}
+                    <div class="mb-4">
+                        <label class="block font-medium mb-1">
+                            Hari
+                        </label>
+
+                        <input
+                            type="text"
+                            value="{{ $hariHariIni }}"
+                            readonly
+                            class="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-700"
+                        >
+                    </div>
+
+                    {{-- Tanggal --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Tanggal
                         </label>
 
                         <input
-                            type="date"
+                            type="text"
+                            value="{{ $tanggalHariIni->locale('id')->translatedFormat('d F Y') }}"
+                            readonly
+                            class="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-700"
+                        >
+
+                        <input
+                            type="hidden"
                             name="tanggal"
-                            value="{{ old('tanggal', date('Y-m-d')) }}"
-                            class="w-full border border-gray-300 rounded-lg p-2"
+                            value="{{ $tanggalHariIni->format('Y-m-d') }}"
                         >
                     </div>
 
+                    {{-- Status --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Status
@@ -43,14 +65,27 @@
                         <select
                             name="status"
                             class="w-full border border-gray-300 rounded-lg p-2"
+                            required
                         >
-                            <option value="hadir">Hadir</option>
-                            <option value="izin">Izin</option>
-                            <option value="sakit">Sakit</option>
-                            <option value="alpa">Alpa</option>
+                            <option value="hadir" {{ old('status') == 'hadir' ? 'selected' : '' }}>
+                                Hadir
+                            </option>
+
+                            <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>
+                                Izin
+                            </option>
+
+                            <option value="sakit" {{ old('status') == 'sakit' ? 'selected' : '' }}>
+                                Sakit
+                            </option>
+
+                            <option value="alpa" {{ old('status') == 'alpa' ? 'selected' : '' }}>
+                                Alpa
+                            </option>
                         </select>
                     </div>
 
+                    {{-- Jam Masuk --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Jam Masuk
@@ -64,6 +99,7 @@
                         >
                     </div>
 
+                    {{-- Jam Pulang --}}
                     <div class="mb-4">
                         <label class="block font-medium mb-1">
                             Jam Pulang
@@ -77,19 +113,8 @@
                         >
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block font-medium mb-1">
-                            Catatan (opsional)
-                        </label>
-
-                        <textarea
-                            name="catatan"
-                            rows="4"
-                            class="w-full border border-gray-300 rounded-lg p-2"
-                        >{{ old('catatan') }}</textarea>
-                    </div>
-
                     <div class="flex gap-2 mt-6">
+
                         <button
                             type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -103,6 +128,7 @@
                         >
                             Batal
                         </a>
+
                     </div>
 
                 </form>

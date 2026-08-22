@@ -32,36 +32,43 @@ class GuruPamongLogbookController extends Controller
             abort(403, 'Anda tidak berwenang memverifikasi logbook ini.');
         }
     }
+public function approve(Request $request, Logbook $logbook)
+{
+    $this->pastikanMilikBimbingan($logbook);
 
-    public function approve(Logbook $logbook)
-    {
-        $this->pastikanMilikBimbingan($logbook);
+    $request->validate([
+        'catatan_guru_pamong' => 'required|string|max:1000',
+    ]);
 
-        $logbook->update([
-            'status_verifikasi' => 'disetujui',
-            'catatan_guru_pamong' => null,
-            'verified_by' => Auth::id(),
-            'verified_at' => now(),
-        ]);
+    $logbook->update([
+        'status_verifikasi' => 'disetujui',
+        'catatan_guru_pamong' => $request->catatan_guru_pamong,
+        'verified_by' => Auth::id(),
+        'verified_at' => now(),
+    ]);
 
-        return redirect()->route('guru-pamong.logbook.index')->with('success', 'Logbook berhasil disetujui.');
-    }
+    return redirect()
+        ->route('guru-pamong.logbook.index')
+        ->with('success', 'Logbook berhasil disetujui.');
+}
 
-    public function revisi(Request $request, Logbook $logbook)
-    {
-        $this->pastikanMilikBimbingan($logbook);
+public function revisi(Request $request, Logbook $logbook)
+{
+    $this->pastikanMilikBimbingan($logbook);
 
-        $request->validate([
-            'catatan_guru_pamong' => 'required',
-        ]);
+    $request->validate([
+        'catatan_guru_pamong' => 'required|string|max:1000',
+    ]);
 
-        $logbook->update([
-            'status_verifikasi' => 'revisi',
-            'catatan_guru_pamong' => $request->catatan_guru_pamong,
-            'verified_by' => Auth::id(),
-            'verified_at' => now(),
-        ]);
+    $logbook->update([
+        'status_verifikasi' => 'revisi',
+        'catatan_guru_pamong' => $request->catatan_guru_pamong,
+        'verified_by' => Auth::id(),
+        'verified_at' => now(),
+    ]);
 
-        return redirect()->route('guru-pamong.logbook.index')->with('success', 'Logbook dikembalikan untuk direvisi.');
-    }
+    return redirect()
+        ->route('guru-pamong.logbook.index')
+        ->with('success', 'Logbook dikembalikan untuk direvisi.');
+}
 }

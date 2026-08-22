@@ -18,6 +18,7 @@ class Mahasiswa extends Model
         'prodi',
         'no_hp',
         'alamat',
+        'foto',
     ];
 
     public function user()

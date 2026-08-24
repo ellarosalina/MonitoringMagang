@@ -1,10 +1,90 @@
 <x-layouts.mahasiswa title="Dashboard" subtitle="">
 
     {{-- HEADER SELAMAT DATANG --}}
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-white mb-6">
-        <h2 class="text-2xl font-bold mb-2">Selamat datang kembali, {{ auth()->user()->name }}! 👋</h2>
-        <p class="text-blue-100">Pantau perkembangan harian, ringkasan logbook, dan status kegiatan magangmu secara terorganisir di sini.</p>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm px-6 py-5 mb-5">
+        <h2 class="text-xl font-bold text-gray-800">
+        Selamat datang kembali, {{ auth()->user()->name }}! 👋
+    </h2>
+    <p class="text-sm text-gray-500 mt-1">
+        Pantau perkembangan harian, ringkasan logbook, dan status kegiatan magangmu di sini.
+    </p>
     </div>
+
+    @if ($perluAbsenHariIni)
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-5">
+        <div class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-11 h-11 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+
+            <div class="flex-1">
+                <h3 class="font-semibold text-amber-800">
+                    Belum Absen Hari Ini
+                </h3>
+
+                <p class="text-sm text-amber-700 mt-1">
+                    Kamu belum melakukan absensi hari ini.
+                </p>
+            </div>
+
+            <a
+                href="{{ route('mahasiswa.absensi.create') }}"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-semibold transition"
+            >
+                Absen Sekarang
+
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+@endif
+
+    @if ($logbookRevisi > 0)
+    <div class="bg-red-50 border border-red-200 rounded-xl p-5 mb-6">
+        <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-11 h-11 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01M10.29 3.86l-7.82 13.5A2 2 0 004.2 20h15.6a2 2 0 001.73-2.64l-7.82-13.5a2 2 0 00-3.42 0z" />
+                </svg>
+            </div>
+
+            <div class="flex-1">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <h3 class="font-semibold text-red-800">
+                            Ada Logbook yang Perlu Direvisi
+                        </h3>
+
+                        <p class="text-sm text-red-700 mt-1">
+                            Kamu memiliki
+                            <span class="font-bold">
+                                {{ $logbookRevisi }}
+                            </span>
+                            logbook oleh Guru Pamong untuk diperbaiki.
+                        </p>
+                    </div>
+
+                    <a
+                        href="{{ route('mahasiswa.logbook.index', ['status' => 'revisi']) }}"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition"
+                    >
+                        Lihat Revisi
+
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+                @endif
+            
 
     @if (!$penempatan)
         {{-- BELUM ADA PENEMPATAN --}}
@@ -95,5 +175,6 @@
             </div>
         </div>
     @endif
+
     
 </x-layouts.mahasiswa>

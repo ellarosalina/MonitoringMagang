@@ -10,6 +10,7 @@
                     <th class="p-3 text-sm font-semibold text-gray-600">Kehadiran</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Logbook</th>
                     <th class="p-3 text-sm font-semibold text-gray-600">Status</th>
+                    <th class="p-3 text-sm font-semibold text-gray-600">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,10 +35,19 @@
                                 {{ ucfirst($penempatan->status) }}
                             </span>
                         </td>
+
+                        <td class="p-3 text-sm">
+                            <a
+                                href="{{ route('guru-pamong.absensi.show', $penempatan) }}"
+                                class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition"
+                                >
+                                    Lihat Absensi
+                            </a>
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="p-4 text-center text-gray-500">Belum ada mahasiswa bimbingan.</td>
+                        <td colspan="7" class="p-4 text-center text-gray-500">Belum ada mahasiswa bimbingan.</td>
                     </tr>
                 @endforelse
             </tbody>

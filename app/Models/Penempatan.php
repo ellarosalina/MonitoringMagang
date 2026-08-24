@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Penempatan extends Model
@@ -45,6 +46,11 @@ class Penempatan extends Model
         return $this->hasMany(Absensi::class);
     }
 
+    public function absensiReopenings(): HasMany
+    {
+    return $this->hasMany(AbsensiReopening::class);
+    }
+
     public function logbooks()
     {
         return $this->hasMany(Logbook::class);
@@ -60,28 +66,97 @@ class Penempatan extends Model
             return 0;
         }
 
-        $akhir = $hariIni->gt($selesai) ? $selesai : $hariIni;
+        $akhir = $hariIni->gt($selesai)
+            ? $selesai
+            : $hariIni;
 
         $hari = 0;
+
         $tanggal = $mulai->copy();
+
         while ($tanggal->lte($akhir)) {
+
             if ($tanggal->isWeekday()) {
                 $hari++;
             }
+
             $tanggal->addDay();
         }
 
-        return max(1, $hari);
+        return $hari;
     }
 
     public function getProgressPercentAttribute(): int
     {
-        if ($this->tanggal_mulai->gt(Carbon::now())) {
+        if (!$this->tanggal_mulai || !$this->tanggal_selesai) {
             return 0;
         }
 
-        $jumlahLogbookTerisi = $this->logbooks()->count();
+        $hariIni = Carbon::now()->startOfDay();
 
-        return (int) min(100, round(($jumlahLogbookTerisi / $this->hari_seharusnya_isi) * 100));
+        $mulai = $this->tanggal_mulai
+            ->copy()
+            ->startOfDay();
+
+        $selesai = $this->tanggal_selesai
+            ->copy()
+            ->startOfDay();
+
+        if ($hariIni->lt($mulai)) {
+            return 0;
+        }
+
+        $akhir = $hariIni->gt($selesai)
+            ? $selesai
+            : $hariIni;
+
+        $hariKerjaBerjalan = 0;
+
+        $tanggal = $mulai->copy();
+
+        while ($tanggal->lte($akhir)) {
+
+            if ($tanggal->isWeekday()) {
+                $hariKerjaBerjalan++;
+            }
+
+            $tanggal->addDay();
+        }
+
+        if ($hariKerjaBerjalan <= 0) {
+            return 0;
+        }
+
+        $absensiSelesai = $this->absensis()
+            ->whereIn('status', [
+                'hadir',
+                'sakit',
+                'izin',
+            ])
+            ->count();
+
+
+        $logbookDisetujui = $this->logbooks()
+            ->where('status_verifikasi', 'disetujui')
+            ->count();
+
+
+        $totalTarget = $hariKerjaBerjalan * 2;
+
+        $totalSelesai = $absensiSelesai + $logbookDisetujui;
+
+        if ($totalTarget <= 0) {
+            return 0;
+        }
+
+        $progress = round(
+            ($totalSelesai / $totalTarget) * 100
+        );
+
+
+        return (int) max(
+            0,
+            min(100, $progress)
+        );
     }
 }

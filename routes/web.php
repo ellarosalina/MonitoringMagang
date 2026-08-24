@@ -16,6 +16,7 @@ use App\Http\Controllers\GuruPamongMahasiswaController;
 use App\Http\Controllers\GuruPamongLogbookController;
 use App\Http\Controllers\GuruPamongProfilController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GuruPamongAbsensiController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -48,15 +49,16 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Khusus Guru Pamong
-    Route::middleware(['role:guru_pamong'])->prefix('guru-pamong')->name('guru-pamong.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'guruPamong'])->name('dashboard');
-        Route::get('/mahasiswa', [GuruPamongMahasiswaController::class, 'index'])->name('mahasiswa.index');
-        Route::get('/logbook', [GuruPamongLogbookController::class, 'index'])->name('logbook.index');
-        Route::get('/logbook', [GuruPamongLogbookController::class, 'index'])->name('logbook.index');
-        Route::put('/logbook/{logbook}/approve', [GuruPamongLogbookController::class, 'approve'])->name('logbook.approve');
-        Route::put('/logbook/{logbook}/revisi', [GuruPamongLogbookController::class, 'revisi'])->name('logbook.revisi');
-        Route::get('/profil', [GuruPamongProfilController::class, 'index'])->name('profil.index');
-        Route::put('/profil', [GuruPamongProfilController::class, 'update'])->name('profil.update');
+  Route::middleware(['role:guru_pamong'])->prefix('guru-pamong')->name('guru-pamong.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'guruPamong'])->name('dashboard');
+    Route::get('/mahasiswa', [GuruPamongMahasiswaController::class, 'index'])->name('mahasiswa.index');
+    Route::get('/logbook', [GuruPamongLogbookController::class, 'index'])->name('logbook.index');
+    Route::put('/logbook/{logbook}/approve', [GuruPamongLogbookController::class, 'approve'])->name('logbook.approve');
+    Route::put('/logbook/{logbook}/revisi', [GuruPamongLogbookController::class, 'revisi'])->name('logbook.revisi');
+    Route::get('/profil', [GuruPamongProfilController::class, 'index'])->name('profil.index');
+    Route::put('/profil', [GuruPamongProfilController::class, 'update'])->name('profil.update');
+    Route::get('/absensi/{penempatan}', [GuruPamongAbsensiController::class, 'show'])->name('absensi.show');
+    Route::post('/absensi/buka/{penempatan}', [GuruPamongAbsensiController::class, 'buka'])->name('absensi.buka');
     });
 
     // Khusus Mahasiswa

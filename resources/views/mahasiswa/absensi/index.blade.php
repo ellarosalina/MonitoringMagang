@@ -1,7 +1,5 @@
 <x-layouts.mahasiswa title="Absensi" subtitle="">
-
     <div class="space-y-6">
-
         <div>
             <h1 class="text-2xl font-bold text-gray-900">
                 Absensi Saya
@@ -10,166 +8,197 @@
 
         @if($penempatan)
 
-                <div class="mb-6">
+            <div class="mb-6">
+                @php
+                    $tanggalHariIni = \Carbon\Carbon::today();
+                    $sudahAbsenHariIni = $penempatan->absensis()
+                        ->whereDate('tanggal', $tanggalHariIni)
+                        ->exists();
+                @endphp
 
-    @php
-        $tanggalHariIni = \Carbon\Carbon::today();
+                @if($tanggalHariIni->isWeekend())
 
-        $sudahAbsenHariIni = $penempatan->absensis()
-            ->whereDate('tanggal', $tanggalHariIni)
-            ->exists();
-    @endphp
+                    <span class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 text-sm font-medium rounded-lg">
+                        Hari Libur - Absensi Tidak Tersedia
+                    </span>
 
-    @if($tanggalHariIni->isWeekend())
+                @elseif($sudahAbsenHariIni)
 
-        <span class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 text-sm font-medium rounded-lg">
-            Hari Libur - Absensi Tidak Tersedia
-        </span>
+                    <span class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 text-sm font-medium rounded-lg">
+                        ✓ Sudah Absen Hari Ini
+                    </span>
 
-    @elseif($sudahAbsenHariIni)
+                @else
 
-        <span class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 text-sm font-medium rounded-lg">
-            ✓ Sudah Absen Hari Ini
-        </span>
+                    <a href="{{ route('mahasiswa.absensi.create') }}"
+                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">
+                        + Isi Absensi Hari Ini
+                    </a>
 
-    @else
+                @endif
+            </div>
 
-        <a href="{{ route('mahasiswa.absensi.create') }}"
-           class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">
-            + Isi Absensi Hari Ini
-        </a>
+            <div class="text-sm text-gray-500 mb-6">
+                Hari ini:
+                <span class="font-medium text-gray-700">
+                    {{ $tanggalHariIni->locale('id')->translatedFormat('l, d F Y') }}
+                </span>
+            </div>
 
-    @endif
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50 border-b">
+                            <th class="text-left px-4 py-4 font-semibold text-gray-900">
+                                Hari
+                            </th>
+                            <th class="text-left px-4 py-4 font-semibold text-gray-900">
+                                Tanggal
+                            </th>
+                            <th class="text-left px-4 py-4 font-semibold text-gray-900">
+                                Jam Masuk
+                            </th>
+                            <th class="text-left px-4 py-4 font-semibold text-gray-900">
+                                Jam Pulang
+                            </th>
+                            <th class="text-left px-4 py-4 font-semibold text-gray-900">
+                                Status
+                            </th>
+                            <th class="text-left px-4 py-4 font-semibold text-gray-900">
+                                Aksi
+                            </th>
+                        </tr>
+                    </thead>
 
-</div>
+                    <tbody>
+                        @forelse($rekapAbsensi as $item)
+                            @php
+                                $tanggal = $item['tanggal'];
+                                $absensi = $item['absensi'];
+                                $status = $item['status'];
+                            @endphp
 
-<div class="text-sm text-gray-500 mb-6">
-    Hari ini:
-    <span class="font-medium text-gray-700">
-        {{ $tanggalHariIni->locale('id')->translatedFormat('l, d F Y') }}
-    </span>
-</div>
+                            <tr class="border-b hover:bg-gray-50">
 
-                <div class="overflow-x-auto">
+                                <td class="px-4 py-4 text-gray-900">
+                                    {{ $tanggal->locale('id')->translatedFormat('l') }}
+                                </td>
 
-                    <table class="w-full text-sm">
+                                <td class="px-4 py-4 text-gray-900">
+                                    {{ $tanggal->locale('id')->translatedFormat('d M Y') }}
+                                </td>
 
-                        <thead>
-                            <tr class="bg-gray-50 border-b">
+                                <td class="px-4 py-4">
+                                    {{ $item['jam_masuk'] ?? '-' }}
+                                </td>
 
-                                <th class="text-left px-4 py-4 font-semibold text-gray-900">
-                                    Hari
-                                </th>
+                                <td class="px-4 py-4">
+                                    {{ $item['jam_pulang'] ?? '-' }}
+                                </td>
 
-                                <th class="text-left px-4 py-4 font-semibold text-gray-900">
-                                    Tanggal
-                                </th>
+                                <td class="px-4 py-4">
 
-                                <th class="text-left px-4 py-4 font-semibold text-gray-900">
-                                    Jam Masuk
-                                </th>
+                                    @if($status === 'hadir')
 
-                                <th class="text-left px-4 py-4 font-semibold text-gray-900">
-                                    Jam Pulang
-                                </th>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-green-100 text-green-700 font-medium text-xs">
+                                            Hadir
+                                        </span>
 
-                                <th class="text-left px-4 py-4 font-semibold text-gray-900">
-                                    Status
-                                </th>
+                                    @elseif($status === 'sakit')
 
-                                <th class="text-left px-4 py-4 font-semibold text-gray-900">
-                                    Aksi
-                                </th>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 font-medium text-xs">
+                                            Sakit
+                                        </span>
 
-                            </tr>
-                        </thead>
+                                    @elseif($status === 'izin')
 
-                        <tbody>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-medium text-xs">
+                                            Izin
+                                        </span>
 
-                            @forelse($absensis as $absensi)
+                                    @elseif($status === 'alpa')
 
-                                <tr class="border-b hover:bg-gray-50">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-red-100 text-red-700 font-medium text-xs">
+                                            Alpa
+                                        </span>
 
-                                    <td class="px-4 py-4 text-gray-900">
-                                        {{ \Carbon\Carbon::parse($absensi->tanggal)->locale('id')->translatedFormat('l') }}
-                                    </td>
+                                    @elseif($status === 'belum_absen')
 
-                                    <td class="px-4 py-4 text-gray-900">
-                                        {{ \Carbon\Carbon::parse($absensi->tanggal)->locale('id')->translatedFormat('d M Y') }}
-                                    </td>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium text-xs">
+                                            Belum Absen
+                                        </span>
 
-                                    <td class="px-4 py-4">
-                                        {{ $absensi->jam_masuk ?? '-' }}
-                                    </td>
+                                    @elseif($status === 'dibuka')
 
-                                    <td class="px-4 py-4">
-                                        {{ $absensi->jam_pulang ?? '-' }}
-                                    </td>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium text-xs">
+                                            Dibuka Kembali
+                                        </span>
 
-                                    <td class="px-4 py-4">
+                                    @endif
 
-                                        @if($absensi->status === 'hadir')
+                                </td>
 
-                                            <span class="text-green-600 font-medium">
-                                                Hadir
-                                            </span>
+                                <td class="px-4 py-4">
 
-                                        @elseif($absensi->status === 'sakit')
+                                    @if($item['ada_data'] && $absensi)
 
-                                            <span class="text-yellow-600 font-medium">
-                                                Sakit
-                                            </span>
-
-                                        @elseif($absensi->status === 'izin')
-
-                                            <span class="text-blue-600 font-medium">
-                                                Izin
-                                            </span>
-
-                                        @elseif($absensi->status === 'alpa')
-
-                                            <span class="text-red-600 font-medium">
-                                                Alpa
-                                            </span>
-
-                                        @endif
-
-                                    </td>
-
-                                    <td class="px-4 py-4">
-
-                                        <a href="{{ route('mahasiswa.absensi.edit', $absensi->id) }}"
-                                           class="text-blue-600 hover:text-blue-800 font-medium">
+                                        <a
+                                            href="{{ route('mahasiswa.absensi.edit', $absensi->id) }}"
+                                            class="text-blue-600 hover:text-blue-800 font-medium"
+                                        >
                                             Edit
                                         </a>
 
-                                    </td>
+                                    @elseif($status === 'belum_absen')
 
-                                </tr>
+                                        <a
+                                            href="{{ route('mahasiswa.absensi.create') }}"
+                                            class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-medium hover:bg-blue-700 transition"
+                                        >
+                                            Absen Sekarang
+                                        </a>
 
-                            @empty
+                                    @elseif($status === 'dibuka')
 
-                                <tr>
-                                    <td colspan="6"
-                                        class="px-4 py-8 text-center text-gray-500">
-                                        Belum ada data absensi.
-                                    </td>
-                                </tr>
+                                        <a
+                                            href="{{ route('mahasiswa.absensi.create', ['tanggal' => $tanggal->format('Y-m-d')]) }}"
+                                            class="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white rounded-md text-xs font-medium hover:bg-indigo-700 transition"
+                                        >
+                                            Isi Absen
+                                        </a>
 
-                            @endforelse
+                                    @elseif($status === 'alpa')
 
-                        </tbody>
+                                        <span class="text-gray-400">
+                                            -
+                                        </span>
 
-                    </table>
+                                    @else
 
-                </div>
+                                        <span class="text-gray-400">
+                                            -
+                                        </span>
 
-                @if(method_exists($absensis, 'links'))
-                    <div class="mt-4">
-                        {{ $absensis->links() }}
-                    </div>
-                @endif
+                                    @endif
 
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+                                <td
+                                    colspan="6"
+                                    class="px-4 py-8 text-center text-gray-500"
+                                >
+                                    Belum ada hari kerja dalam periode magang.
+                                </td>
+                            </tr>
+
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
 
         @else
@@ -181,7 +210,5 @@
             </div>
 
         @endif
-
     </div>
-
 </x-layouts.mahasiswa>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Absensi;
+use App\Models\AbsensiReopening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -16,22 +17,97 @@ class MahasiswaAbsensiController extends Controller
         if (!$penempatan) {
             return view('mahasiswa.absensi.index', [
                 'penempatan' => null,
-                'absensis' => collect(),
+                'rekapAbsensi' => collect(),
             ]);
         }
 
-        // Hanya menampilkan absensi yang sudah benar-benar disimpan
-        $absensis = $penempatan->absensis()
-            ->orderBy('tanggal', 'desc')
-            ->paginate(10);
+        $tanggalMulai = $penempatan->tanggal_mulai->copy()->startOfDay();
+        $tanggalSelesai = $penempatan->tanggal_selesai->copy()->startOfDay();
+        $hariIni = Carbon::today();
+
+        if ($hariIni->lt($tanggalMulai)) {
+            $rekapAbsensi = collect();
+        } else {
+            $tanggalAkhir = $hariIni->gt($tanggalSelesai)
+                ? $tanggalSelesai
+                : $hariIni;
+
+            $dataAbsensi = $penempatan->absensis()
+                ->get()
+                ->keyBy(function ($absensi) {
+                    return Carbon::parse($absensi->tanggal)->format('Y-m-d');
+                });
+
+            $dataReopening = $penempatan->absensiReopenings()
+                ->get()
+                ->keyBy(function ($reopening) {
+                    return Carbon::parse($reopening->tanggal)->format('Y-m-d');
+                });
+
+            $rekapAbsensi = collect();
+
+            $tanggal = $tanggalMulai->copy();
+
+            while ($tanggal->lte($tanggalAkhir)) {
+
+                if ($tanggal->isWeekday()) {
+
+                    $tanggalKey = $tanggal->format('Y-m-d');
+
+                    $absensi = $dataAbsensi->get($tanggalKey);
+                    $reopening = $dataReopening->get($tanggalKey);
+
+                    if ($absensi) {
+
+                        $rekapAbsensi->push([
+                            'tanggal' => $tanggal->copy(),
+                            'absensi' => $absensi,
+                            'status' => $absensi->status,
+                            'jam_masuk' => $absensi->jam_masuk,
+                            'jam_pulang' => $absensi->jam_pulang,
+                            'ada_data' => true,
+                            'dibuka_kembali' => false,
+                        ]);
+
+                    } else {
+
+                        if ($tanggal->isSameDay($hariIni)) {
+                            $status = 'belum_absen';
+                        } elseif ($reopening) {
+                            $status = 'dibuka';
+                        } else {
+                            $status = 'alpa';
+                        }
+
+                        $rekapAbsensi->push([
+                            'tanggal' => $tanggal->copy(),
+                            'absensi' => null,
+                            'status' => $status,
+                            'jam_masuk' => null,
+                            'jam_pulang' => null,
+                            'ada_data' => false,
+                            'dibuka_kembali' => $reopening !== null,
+                        ]);
+                    }
+                }
+
+                $tanggal->addDay();
+            }
+
+            $rekapAbsensi = $rekapAbsensi
+                ->sortByDesc(function ($item) {
+                    return $item['tanggal']->format('Y-m-d');
+                })
+                ->values();
+        }
 
         return view('mahasiswa.absensi.index', [
             'penempatan' => $penempatan,
-            'absensis' => $absensis,
+            'rekapAbsensi' => $rekapAbsensi,
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $penempatan = Auth::user()->mahasiswa->penempatans()->latest()->first();
 
@@ -41,38 +117,81 @@ class MahasiswaAbsensiController extends Controller
                 ->with('error', 'Anda belum memiliki penempatan magang. Hubungi Admin GTK.');
         }
 
-        // Tanggal hari ini otomatis
-        $tanggalHariIni = Carbon::today();
+        $hariIni = Carbon::today();
 
-        // Hari otomatis dalam Bahasa Indonesia
-        $hariHariIni = $tanggalHariIni
-            ->locale('id')
-            ->translatedFormat('l');
+        $tanggalInput = $request->query('tanggal');
 
-        // Sabtu dan Minggu tidak bisa mengisi absensi
-        if ($tanggalHariIni->isWeekend()) {
+        if ($tanggalInput) {
+            try {
+                $tanggalYangDipilih = Carbon::parse($tanggalInput)->startOfDay();
+            } catch (\Exception $e) {
+                return redirect()
+                    ->route('mahasiswa.absensi.index')
+                    ->with('error', 'Tanggal absensi tidak valid.');
+            }
+        } else {
+            $tanggalYangDipilih = $hariIni->copy()->startOfDay();
+        }
+
+        $tanggalMulai = $penempatan->tanggal_mulai
+            ->copy()
+            ->startOfDay();
+
+        $tanggalSelesai = $penempatan->tanggal_selesai
+            ->copy()
+            ->startOfDay();
+
+        if (
+            $tanggalYangDipilih->lt($tanggalMulai) ||
+            $tanggalYangDipilih->gt($tanggalSelesai)
+        ) {
+            return redirect()
+                ->route('mahasiswa.absensi.index')
+                ->with('error', 'Tanggal absensi berada di luar periode magang.');
+        }
+
+        if ($tanggalYangDipilih->isWeekend()) {
             return redirect()
                 ->route('mahasiswa.absensi.index')
                 ->with('error', 'Absensi hanya dapat diisi pada hari kerja, yaitu Senin sampai Jumat.');
         }
 
-        // Cek apakah hari ini sudah pernah absen
         $sudahAbsen = $penempatan->absensis()
-            ->whereDate('tanggal', $tanggalHariIni)
+            ->whereDate('tanggal', $tanggalYangDipilih)
             ->exists();
 
-        // Kalau sudah absen, tidak boleh membuat absensi kedua
         if ($sudahAbsen) {
             return redirect()
                 ->route('mahasiswa.absensi.index')
-                ->with('error', 'Absensi hari ini sudah diisi.');
+                ->with('error', 'Absensi pada tanggal tersebut sudah diisi.');
         }
+
+        $reopening = $penempatan->absensiReopenings()
+            ->whereDate('tanggal', $tanggalYangDipilih)
+            ->first();
+
+        $bolehIsiTanggalLama = $reopening !== null;
+
+        if (
+            !$tanggalYangDipilih->isSameDay($hariIni) &&
+            !$bolehIsiTanggalLama
+        ) {
+            return redirect()
+                ->route('mahasiswa.absensi.index')
+                ->with('error', 'Absensi tanggal tersebut belum dibuka kembali oleh Guru Pamong.');
+        }
+
+        $hariHariIni = $tanggalYangDipilih
+            ->locale('id')
+            ->translatedFormat('l');
 
         return view('mahasiswa.absensi.create', [
             'penempatan' => $penempatan,
-            'tanggalHariIni' => $tanggalHariIni,
+            'tanggalHariIni' => $tanggalYangDipilih,
             'hariHariIni' => $hariHariIni,
             'sudahAbsen' => $sudahAbsen,
+            'reopening' => $reopening,
+            'bolehIsiTanggalLama' => $bolehIsiTanggalLama,
         ]);
     }
 
@@ -93,44 +212,67 @@ class MahasiswaAbsensiController extends Controller
             'status' => 'required|in:hadir,izin,sakit,alpa',
         ]);
 
-        // Tanggal hari ini
-        $tanggalHariIni = Carbon::today();
+        $tanggal = Carbon::parse($request->tanggal)->startOfDay();
 
-        // Pastikan tanggal yang dikirim adalah tanggal hari ini
+        $hariIni = Carbon::today();
+
+        $tanggalMulai = $penempatan->tanggal_mulai
+            ->copy()
+            ->startOfDay();
+
+        $tanggalSelesai = $penempatan->tanggal_selesai
+            ->copy()
+            ->startOfDay();
+
         if (
-            Carbon::parse($request->tanggal)->format('Y-m-d')
-            !==
-            $tanggalHariIni->format('Y-m-d')
+            $tanggal->lt($tanggalMulai) ||
+            $tanggal->gt($tanggalSelesai)
         ) {
             return back()
                 ->withInput()
                 ->withErrors([
-                    'tanggal' => 'Tanggal absensi harus menggunakan tanggal hari ini.'
+                    'tanggal' => 'Tanggal absensi berada di luar periode magang.'
                 ]);
         }
 
-        // Pastikan bukan Sabtu/Minggu
-        if ($tanggalHariIni->isWeekend()) {
+        if ($tanggal->isWeekend()) {
             return back()
+                ->withInput()
                 ->withErrors([
                     'tanggal' => 'Absensi hanya dapat diisi pada hari kerja.'
                 ]);
         }
 
-        // Cegah absensi ganda pada tanggal yang sama
+        $reopening = $penempatan->absensiReopenings()
+            ->whereDate('tanggal', $tanggal)
+            ->first();
+
+        $bolehIsiTanggalLama = $reopening !== null;
+
+        if (
+            !$tanggal->isSameDay($hariIni) &&
+            !$bolehIsiTanggalLama
+        ) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'tanggal' => 'Tanggal tersebut belum dibuka kembali oleh Guru Pamong.'
+                ]);
+        }
+
         $sudahAbsen = $penempatan->absensis()
-            ->whereDate('tanggal', $tanggalHariIni)
+            ->whereDate('tanggal', $tanggal)
             ->exists();
 
         if ($sudahAbsen) {
             return redirect()
                 ->route('mahasiswa.absensi.index')
-                ->with('error', 'Absensi hari ini sudah diisi.');
+                ->with('error', 'Absensi pada tanggal tersebut sudah diisi.');
         }
 
         Absensi::create([
             'penempatan_id' => $penempatan->id,
-            'tanggal' => $tanggalHariIni->format('Y-m-d'),
+            'tanggal' => $tanggal->format('Y-m-d'),
             'jam_masuk' => $request->jam_masuk,
             'jam_pulang' => $request->jam_pulang,
             'status' => $request->status,
@@ -138,25 +280,39 @@ class MahasiswaAbsensiController extends Controller
 
         return redirect()
             ->route('mahasiswa.absensi.index')
-            ->with('success', 'Absensi berhasil disimpan.');
+            ->with(
+                'success',
+                'Absensi tanggal ' .
+                $tanggal->locale('id')->translatedFormat('d F Y') .
+                ' berhasil disimpan.'
+            );
     }
 
     public function edit(Absensi $absensi)
     {
+        $mahasiswa = Auth::user()->mahasiswa;
+
+        if ($absensi->penempatan->mahasiswa_id !== $mahasiswa->id) {
+            abort(403, 'Anda tidak memiliki akses ke absensi ini.');
+        }
+
         return view('mahasiswa.absensi.edit', compact('absensi'));
     }
 
     public function update(Request $request, Absensi $absensi)
     {
-        // Tanggal TIDAK divalidasi dari request
-        // karena tanggal tidak boleh diubah saat edit
+        $mahasiswa = Auth::user()->mahasiswa;
+
+        if ($absensi->penempatan->mahasiswa_id !== $mahasiswa->id) {
+            abort(403, 'Anda tidak memiliki akses ke absensi ini.');
+        }
+
         $request->validate([
             'jam_masuk' => 'nullable',
             'jam_pulang' => 'nullable',
             'status' => 'required|in:hadir,izin,sakit,alpa',
         ]);
 
-        // Hanya jam dan status yang boleh diubah
         $absensi->update([
             'jam_masuk' => $request->jam_masuk,
             'jam_pulang' => $request->jam_pulang,

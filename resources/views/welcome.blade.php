@@ -21,36 +21,66 @@
         }
 
         .home {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0757a8, #168bd1);
-            color: white;
-            overflow: hidden;
+        min-height: 100vh;
+        background: linear-gradient(
+        180deg,
+        #6ec6ed 0%,
+        #168bd1 38%,
+        #0757a8 100%
+);
+        color: white;
+        overflow: hidden;
         }
 
         /* NAVBAR */
+
         .navbar {
-            max-width: 1200px;
+            max-width: 1250px;
             margin: auto;
-            padding: 20px 30px;
+            padding: 18px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 30px;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 13px;
             color: white;
             text-decoration: none;
-            font-size: 20px;
-            font-weight: bold;
         }
 
         .brand img {
-            width: 45px;
-            height: 45px;
+            width: 68px;
+            height: 58px;
             object-fit: contain;
+            transform: scale(1.12);
+        }
+
+        .brand-divider {
+            width: 1px;
+            height: 38px;
+            background: rgba(255, 255, 255, .35);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .brand-subtitle {
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, .78);
         }
 
         .nav-buttons {
@@ -59,16 +89,22 @@
         }
 
         .nav-buttons a {
-            padding: 10px 22px;
-            border-radius: 8px;
+            padding: 11px 22px;
+            border-radius: 9px;
             text-decoration: none;
             font-size: 14px;
             font-weight: bold;
+            transition: .2s ease;
+        }
+
+        .nav-buttons a:hover {
+            transform: translateY(-2px);
         }
 
         .login {
             color: white;
             border: 1px solid white;
+            background: rgba(255, 255, 255, .04);
         }
 
         .login:hover {
@@ -79,39 +115,43 @@
         .register {
             background: #ffc20e;
             color: #174a87;
+            border: 1px solid #ffc20e;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .12);
         }
 
         .register:hover {
             background: #ffd447;
         }
 
-        /* KHUSUS DESTOP LAPTOP */
+        /* HERO */
+
         .hero {
-            max-width: 1200px;
-            height: calc(100vh - 85px);
+            max-width: 1250px;
+            min-height: calc(100vh - 85px);
             margin: auto;
-            padding: 30px;
+            padding: 25px 30px 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 50px;
+            gap: 65px;
         }
 
         .hero-content {
-            width: 55%;
+            width: 56%;
         }
 
         .subtitle {
             margin-bottom: 15px;
             font-size: 15px;
             font-weight: bold;
-            letter-spacing: 2px;
+            letter-spacing: 2.2px;
         }
 
         .hero h1 {
             margin: 0 0 20px;
-            font-size: 52px;
-            line-height: 1.1;
+            font-size: 54px;
+            line-height: 1.08;
+            letter-spacing: -1px;
         }
 
         .hero h1 span {
@@ -119,7 +159,8 @@
         }
 
         .description {
-            max-width: 560px;
+            max-width: 580px;
+            margin: 0;
             font-size: 16px;
             line-height: 1.7;
             color: #e5f5ff;
@@ -128,93 +169,120 @@
         /* LOGO */
 
         .logo-container {
-            width: 40%;
-
+            width: 44%;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
         .logo-box {
-            width: 350px;
-            height: 350px;
+            width: 380px;
+            height: 380px;
             padding: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .18);
+            border-radius: 32px;
+            box-shadow: 0 25px 60px rgba(0, 40, 90, .25);
+            transition: .3s ease;
+        }
+
+        .logo-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 70px rgba(0, 40, 90, .30);
         }
 
         .logo-box img {
             width: 100%;
-            max-width: 270px;
+            max-width: 295px;
+            object-fit: contain;
         }
 
         /* FOOTER */
+
         .footer {
             position: absolute;
             bottom: 15px;
+            left: 0;
             width: 100%;
-
             text-align: center;
-
             font-size: 12px;
             color: rgba(255, 255, 255, .75);
         }
 
-        /* KHUSUS TABLET */
+        /* TABLET */
 
-        @media (max-width: 850px) {
+        @media (max-width: 900px) {
 
-            .hero {
-                height: auto;
-                min-height: calc(100vh - 85px);
-
-                flex-direction: column;
-                text-align: center;
-
-                padding-top: 40px;
-                padding-bottom: 60px;
+            .navbar {
+                padding: 18px 25px;
             }
 
-            .hero-content,
-            .logo-container {
-                width: 100%;
+            .hero {
+                min-height: auto;
+                padding: 50px 30px 100px;
+                flex-direction: column;
+                text-align: center;
+                gap: 45px;
             }
 
             .hero-content {
+                width: 100%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
             }
 
             .hero h1 {
-                font-size: 40px;
+                font-size: 45px;
+            }
+
+            .description {
+                max-width: 650px;
+            }
+
+            .logo-container {
+                width: 100%;
             }
 
             .logo-box {
-                width: 280px;
-                height: 280px;
+                width: 320px;
+                height: 320px;
             }
+
         }
 
-        /* KHUSUS HP */
+        /* HP */
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
 
             .navbar {
-                padding: 12px 12px;
+                padding: 13px 15px;
+                gap: 10px;
             }
 
             .brand {
-                font-size: 16px;
-                gap: 6px;
+                gap: 8px;
             }
 
             .brand img {
-                width: 34px;
-                height: 34px;
+                width: 48px;
+                height: 43px;
+                transform: scale(1.1);
+            }
+
+            .brand-divider {
+                height: 30px;
+            }
+
+            .brand-title {
+                font-size: 15px;
+            }
+
+            .brand-subtitle {
+                font-size: 7px;
+                letter-spacing: 1px;
             }
 
             .nav-buttons {
@@ -222,105 +290,91 @@
             }
 
             .nav-buttons a {
-                padding: 8px 11px;
+                padding: 8px 12px;
                 font-size: 11px;
-                border-radius: 8px;
+                border-radius: 7px;
             }
 
             .hero {
-                height: auto;
                 min-height: 0;
-                margin: 0;
-                padding: 45px 18px 80px;
-                display: flex;
+                padding: 45px 18px 85px;
                 flex-direction: column;
-                align-items: center;
                 justify-content: flex-start;
-                gap: 35px;
+                gap: 38px;
                 text-align: center;
             }
 
-            /* TEXT HP */
             .hero-content {
                 width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
             }
 
             .subtitle {
-                margin-bottom: 14px;
-                font-size: 14px;
-                line-height: 1.5;
-                letter-spacing: 1.8px;
+                margin-bottom: 13px;
+                font-size: 11px;
+                letter-spacing: 1.6px;
             }
 
             .hero h1 {
-                margin: 0 0 16px;
+                margin: 0 0 17px;
                 font-size: 32px;
                 line-height: 1.08;
             }
 
             .description {
-                max-width: 360px;
-                margin: 0;
-                font-size: 14px;
+                max-width: 350px;
+                margin: auto;
+                font-size: 13px;
                 line-height: 1.7;
             }
 
-
-            /* LOGO DI HP */
             .logo-container {
                 width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 0;
-                margin: 0;
             }
 
             .logo-box {
-                width: 220px;
-                height: 220px;
-                padding: 25px;
-                border-radius: 28px;
-                box-shadow: 0 15px 35px rgba(0, 0, 0, .16);
+                width: 245px;
+                height: 245px;
+                padding: 28px;
+                border-radius: 27px;
             }
 
             .logo-box img {
-                width: 100%;
-                max-width: 170px;
+                max-width: 190px;
             }
 
-            /* FOOTER HP */
             .footer {
                 position: fixed;
                 bottom: 8px;
-                left: 0;
-                width: 100%;
                 padding: 0 10px;
-                text-align: center;
                 font-size: 9px;
                 line-height: 1.4;
-                z-index: 10;
             }
+
         }
 
         /* HP KECIL */
-        @media (max-width: 360px) {
+
+        @media (max-width: 380px) {
 
             .navbar {
                 padding: 10px;
             }
 
-            .brand {
-                font-size: 13px;
-                gap: 4px;
+            .brand img {
+                width: 40px;
+                height: 36px;
             }
 
-            .brand img {
-                width: 28px;
-                height: 28px;
+            .brand-title {
+                font-size: 13px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .brand-divider {
+                height: 25px;
             }
 
             .nav-buttons {
@@ -334,19 +388,17 @@
 
             .hero {
                 padding: 38px 14px 75px;
-                gap: 28px;
+                gap: 30px;
             }
 
             .subtitle {
-                font-size: 11px;
-                letter-spacing: 1.2px;
-                margin-bottom: 10px;
+                font-size: 10px;
+                letter-spacing: 1.1px;
             }
 
             .hero h1 {
-                font-size: 27px;
+                font-size: 28px;
                 line-height: 1.08;
-                margin-bottom: 13px;
             }
 
             .description {
@@ -356,20 +408,19 @@
             }
 
             .logo-box {
-                width: 180px;
-                height: 180px;
-                padding: 20px;
-                border-radius: 24px;
+                width: 205px;
+                height: 205px;
+                padding: 23px;
             }
 
             .logo-box img {
-                max-width: 140px;
+                max-width: 160px;
             }
 
             .footer {
-                bottom: 5px;
                 font-size: 8px;
             }
+
         }
 
     </style>
@@ -379,23 +430,51 @@
 
 <div class="home">
 
-      {{-- NAVBAR --}}
+    {{-- NAVBAR --}}
 
     <nav class="navbar">
+
         <a href="{{ url('/') }}" class="brand">
+
             <img
                 src="{{ asset('images/logo-disdik-jabar.png') }}"
-                alt="Logo Disdik Jabar">
-            <span>SIM Magang Mahasiswa</span>
+                alt="Logo Disdik Jabar"
+            >
+
+            <div class="brand-divider"></div>
+
+            <div class="brand-text">
+
+                <div class="brand-title">
+                    SIM Magang Mahasiswa
+                </div>
+
+                <div class="brand-subtitle">
+                    DINAS PENDIDIKAN JAWA BARAT
+                </div>
+
+            </div>
+
         </a>
 
         <div class="nav-buttons">
-            <a href="{{ route('login') }}"
-                class="login">Masuk</a>
+
+            <a
+                href="{{ route('login') }}"
+                class="login"
+            >
+                Masuk
+            </a>
 
             @if (Route::has('register'))
-                <a href="{{ route('register') }}"
-                    class="register">Daftar</a>
+
+                <a
+                    href="{{ route('register') }}"
+                    class="register"
+                >
+                    Daftar
+                </a>
+
             @endif
 
         </div>
@@ -403,11 +482,19 @@
     </nav>
 
     {{-- HERO --}}
+
     <section class="hero">
-        <!-- TEXT -->
+
         <div class="hero-content">
-            <div class="subtitle">DINAS PENDIDIKAN JAWA BARAT</div>
-            <h1>Sistem Informasi<br>Monitoring <span>Magang Mahasiswa</span></h1>
+
+            <div class="subtitle">
+                DINAS PENDIDIKAN JAWA BARAT
+            </div>
+
+            <h1>
+                Sistem Informasi<br>
+                Monitoring <span>Magang Mahasiswa</span>
+            </h1>
 
             <p class="description">
                 Platform digital untuk membantu mahasiswa,
@@ -415,24 +502,33 @@
                 kegiatan magang secara terintegrasi,
                 mulai dari absensi hingga logbook.
             </p>
+
         </div>
 
-        <!-- LOGO -->
         <div class="logo-container">
+
             <div class="logo-box">
+
                 <img
                     src="{{ asset('images/logo-disdik-jabar.png') }}"
-                    alt="Logo Disdik Jabar">
+                    alt="Logo Disdik Jabar"
+                >
+
             </div>
+
         </div>
+
     </section>
 
-
     {{-- FOOTER --}}
+
     <footer class="footer">
+
         © {{ date('Y') }} SIM Magang Mahasiswa —
         Dinas Pendidikan Jawa Barat
+
     </footer>
+
 </div>
 
 </body>

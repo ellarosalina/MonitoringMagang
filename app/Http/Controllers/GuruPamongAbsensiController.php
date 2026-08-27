@@ -65,12 +65,19 @@ class GuruPamongAbsensiController extends Controller
                     $reopening = $dataReopening->get($tanggalKey);
 
                     if ($absensi) {
+
                         $status = $absensi->status;
+
                     } elseif ($tanggal->isSameDay($hariIni)) {
+
                         $status = 'belum_absen';
+
                     } elseif ($reopening) {
+
                         $status = 'dibuka';
+
                     } else {
+
                         $status = 'alpa';
                     }
 
@@ -117,7 +124,8 @@ class GuruPamongAbsensiController extends Controller
             ],
         ]);
 
-        $tanggal = Carbon::parse($request->tanggal)->startOfDay();
+        $tanggal = Carbon::parse($request->tanggal)
+            ->startOfDay();
 
         $tanggalMulai = $penempatan->tanggal_mulai
             ->copy()
@@ -128,6 +136,7 @@ class GuruPamongAbsensiController extends Controller
             ->startOfDay();
 
         if ($tanggal->lt($tanggalMulai) || $tanggal->gt($tanggalSelesai)) {
+
             return back()->with(
                 'error',
                 'Tanggal tersebut berada di luar periode magang.'
@@ -135,21 +144,32 @@ class GuruPamongAbsensiController extends Controller
         }
 
         if ($tanggal->isWeekend()) {
+
             return back()->with(
                 'error',
                 'Absensi hanya dapat dibuka untuk hari kerja.'
             );
         }
 
-        $sudahAdaAbsensi = $penempatan->absensis()
+        $absensi = $penempatan->absensis()
             ->whereDate('tanggal', $tanggal)
-            ->exists();
+            ->first();
 
-        if ($sudahAdaAbsensi) {
+        $reopening = $penempatan->absensiReopenings()
+            ->whereDate('tanggal', $tanggal)
+            ->first();
+
+        if (!$absensi && $reopening) {
+
             return back()->with(
                 'error',
-                'Mahasiswa sudah memiliki absensi pada tanggal tersebut.'
+                'Absensi pada tanggal tersebut sudah dibuka kembali dan sedang menunggu mahasiswa.'
             );
+        }
+
+        if ($absensi) {
+
+            $absensi->delete();
         }
 
         AbsensiReopening::updateOrCreate(

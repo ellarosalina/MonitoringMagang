@@ -21,13 +21,22 @@ class MahasiswaAbsensiController extends Controller
             ]);
         }
 
-        $tanggalMulai = $penempatan->tanggal_mulai->copy()->startOfDay();
-        $tanggalSelesai = $penempatan->tanggal_selesai->copy()->startOfDay();
+        $tanggalMulai = $penempatan->tanggal_mulai
+            ->copy()
+            ->startOfDay();
+
+        $tanggalSelesai = $penempatan->tanggal_selesai
+            ->copy()
+            ->startOfDay();
+
         $hariIni = Carbon::today();
 
         if ($hariIni->lt($tanggalMulai)) {
+
             $rekapAbsensi = collect();
+
         } else {
+
             $tanggalAkhir = $hariIni->gt($tanggalSelesai)
                 ? $tanggalSelesai
                 : $hariIni;
@@ -55,6 +64,7 @@ class MahasiswaAbsensiController extends Controller
                     $tanggalKey = $tanggal->format('Y-m-d');
 
                     $absensi = $dataAbsensi->get($tanggalKey);
+
                     $reopening = $dataReopening->get($tanggalKey);
 
                     if ($absensi) {
@@ -122,15 +132,24 @@ class MahasiswaAbsensiController extends Controller
         $tanggalInput = $request->query('tanggal');
 
         if ($tanggalInput) {
+
             try {
-                $tanggalYangDipilih = Carbon::parse($tanggalInput)->startOfDay();
+
+                $tanggalYangDipilih = Carbon::parse($tanggalInput)
+                    ->startOfDay();
+
             } catch (\Exception $e) {
+
                 return redirect()
                     ->route('mahasiswa.absensi.index')
                     ->with('error', 'Tanggal absensi tidak valid.');
             }
+
         } else {
-            $tanggalYangDipilih = $hariIni->copy()->startOfDay();
+
+            $tanggalYangDipilih = $hariIni
+                ->copy()
+                ->startOfDay();
         }
 
         $tanggalMulai = $penempatan->tanggal_mulai
@@ -153,7 +172,10 @@ class MahasiswaAbsensiController extends Controller
         if ($tanggalYangDipilih->isWeekend()) {
             return redirect()
                 ->route('mahasiswa.absensi.index')
-                ->with('error', 'Absensi hanya dapat diisi pada hari kerja, yaitu Senin sampai Jumat.');
+                ->with(
+                    'error',
+                    'Absensi hanya dapat diisi pada hari kerja, yaitu Senin sampai Jumat.'
+                );
         }
 
         $sudahAbsen = $penempatan->absensis()
@@ -178,7 +200,10 @@ class MahasiswaAbsensiController extends Controller
         ) {
             return redirect()
                 ->route('mahasiswa.absensi.index')
-                ->with('error', 'Absensi tanggal tersebut belum dibuka kembali oleh Guru Pamong.');
+                ->with(
+                    'error',
+                    'Absensi tanggal tersebut belum dibuka kembali oleh Guru Pamong.'
+                );
         }
 
         $hariHariIni = $tanggalYangDipilih
@@ -212,7 +237,8 @@ class MahasiswaAbsensiController extends Controller
             'status' => 'required|in:hadir,izin,sakit,alpa',
         ]);
 
-        $tanggal = Carbon::parse($request->tanggal)->startOfDay();
+        $tanggal = Carbon::parse($request->tanggal)
+            ->startOfDay();
 
         $hariIni = Carbon::today();
 
@@ -267,25 +293,32 @@ class MahasiswaAbsensiController extends Controller
         if ($sudahAbsen) {
             return redirect()
                 ->route('mahasiswa.absensi.index')
-                ->with('error', 'Absensi pada tanggal tersebut sudah diisi.');
+                ->with(
+                    'error',
+                    'Absensi pada tanggal tersebut sudah diisi.'
+                );
         }
 
         Absensi::create([
-            'penempatan_id' => $penempatan->id,
-            'tanggal' => $tanggal->format('Y-m-d'),
-            'jam_masuk' => $request->jam_masuk,
-            'jam_pulang' => $request->jam_pulang,
-            'status' => $request->status,
-        ]);
+    'penempatan_id' => $penempatan->id,
+    'tanggal' => $tanggal->format('Y-m-d'),
+    'jam_masuk' => $request->jam_masuk,
+    'jam_pulang' => $request->jam_pulang,
+    'status' => $request->status,
+]);
 
-        return redirect()
-            ->route('mahasiswa.absensi.index')
-            ->with(
-                'success',
-                'Absensi tanggal ' .
-                $tanggal->locale('id')->translatedFormat('d F Y') .
-                ' berhasil disimpan.'
-            );
+AbsensiReopening::where('penempatan_id', $penempatan->id)
+    ->whereDate('tanggal', $tanggal)
+    ->delete();
+
+return redirect()
+    ->route('mahasiswa.absensi.index')
+    ->with(
+        'success',
+        'Absensi tanggal ' .
+        $tanggal->locale('id')->translatedFormat('d F Y') .
+        ' berhasil disimpan.'
+    );
     }
 
     public function edit(Absensi $absensi)
@@ -321,6 +354,9 @@ class MahasiswaAbsensiController extends Controller
 
         return redirect()
             ->route('mahasiswa.absensi.index')
-            ->with('success', 'Absensi berhasil diperbarui.');
+            ->with(
+                'success',
+                'Absensi berhasil diperbarui.'
+            );
     }
 }

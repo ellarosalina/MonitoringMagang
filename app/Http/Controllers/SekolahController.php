@@ -7,12 +7,21 @@ use Illuminate\Http\Request;
 
 class SekolahController extends Controller
 {
-    public function index()
-    {
-        $sekolahs = Sekolah::latest()->paginate(10);
-        return view('admin.sekolah.index', compact('sekolahs'));
-    }
+    public function index(Request $request)
+{
+    $search = $request->search;
 
+    $sekolahs = Sekolah::when($search, function ($query) use ($search) {
+        $query->where('nama_sekolah', 'like', "%{$search}%")
+              ->orWhere('npsn', 'like', "%{$search}%")
+              ->orWhere('kecamatan', 'like', "%{$search}%");
+    })
+    ->latest()
+    ->paginate(10)
+    ->withQueryString();
+
+    return view('admin.sekolah.index', compact('sekolahs', 'search'));
+}
     public function create()
     {
         return view('admin.sekolah.create');

@@ -4,27 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\Penempatan;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use App\Exports\MonitoringExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class MonitoringController extends Controller
 {
-    public function index()
-    {
-        $penempatans = Penempatan::with(['mahasiswa.user', 'sekolah', 'guruPamong.user'])
-            ->withCount([
-                'absensis',
-                'absensis as hadir_count' => fn ($q) => $q->where('status', 'hadir'),
-                'logbooks',
-                'logbooks as logbook_disetujui_count' => fn ($q) => $q->where('status_verifikasi', 'disetujui'),
-                'logbooks as logbook_menunggu_count' => fn ($q) => $q->where('status_verifikasi', 'menunggu'),
-                'logbooks as logbook_revisi_count' => fn ($q) => $q->where('status_verifikasi', 'revisi'),
-            ])
-            ->latest()
-            ->paginate(10);
+    public function index(Request $request)
+{
+    $search = $request->search;
 
-        return view('admin.monitoring.index', compact('penempatans'));
-    }
+    $penempatans = Penempatan::with(['mahasiswa.user', 'sekolah', 'guruPamong.user'])
+        ->withCount([
+            'absensis',
+            'absensis as hadir_count' => fn ($q) => $q->where('status', 'hadir'),
+            'logbooks',
+            'logbooks as logbook_disetujui_count' => fn ($q) => $q->where('status_verifikasi', 'disetujui'),
+            'logbooks as logbook_menunggu_count' => fn ($q) => $q->where('status_verifikasi', 'menunggu'),
+            'logbooks as logbook_revisi_count' => fn ($q) => $q->where('status_verifikasi', 'revisi'),
+        ])
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('mahasiswa.user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('sekolah', fn ($q) => $q->where('nama_sekolah', 'like', "%{$search}%"));
+            });
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('admin.monitoring.index', compact('penempatans', 'search'));
+}
 
     public function show(Penempatan $penempatan)
     {

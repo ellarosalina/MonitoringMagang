@@ -12,10 +12,29 @@ use Illuminate\Support\Facades\Hash;
 class GuruPamongController extends Controller
 {
     // Tampilkan semua data guru pamong
-    public function index()
+    public function index(Request $request)
     {
-        $guruPamongs = GuruPamong::with(['user', 'sekolah'])->latest()->paginate(10);
-        return view('admin.guru-pamong.index', compact('guruPamongs'));
+        $search = $request->search;
+
+        $guruPamongs = GuruPamong::with(['user', 'sekolah'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('sekolah', function ($q) use ($search) {
+                        $q->where('nama_sekolah', 'like', "%{$search}%");
+                    })
+                    ->orWhere('nip', 'like', "%{$search}%")
+                    ->orWhere('mapel', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.guru-pamong.index', compact('guruPamongs', 'search'));
     }
 
     // Tampilkan form tambah guru pamong
@@ -25,7 +44,7 @@ class GuruPamongController extends Controller
         return view('admin.guru-pamong.create', compact('sekolahs'));
     }
 
-    // Simpan data guru pamong baru (bikin akun + profil sekaligus)
+    // Simpan data guru pamong baru
     public function store(Request $request)
     {
         $request->validate([
@@ -71,7 +90,7 @@ class GuruPamongController extends Controller
         return view('admin.guru-pamong.edit', compact('guruPamong', 'sekolahs'));
     }
 
-    // Update data (password opsional, cuma diubah kalau diisi)
+    // Update data
     public function update(Request $request, GuruPamong $guruPamong)
     {
         $request->validate([
@@ -107,7 +126,7 @@ class GuruPamongController extends Controller
         return redirect()->route('admin.guru-pamong.index')->with('success', 'Data guru pamong berhasil diperbarui.');
     }
 
-    // Hapus guru pamong (otomatis hapus user login-nya juga, karena cascadeOnDelete)
+    // Hapus guru pamong
     public function destroy(GuruPamong $guruPamong)
     {
         $guruPamong->user->delete();

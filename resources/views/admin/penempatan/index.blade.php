@@ -6,7 +6,7 @@
         </div>
     @endif
 
-    <a href="{{ route('admin.penempatan.create') }}" class="inline-block mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    <a href="{{ route('admin.penempatan.create') }}" class="inline-block mb-4 px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
         + Tambah Penempatan
     </a>
 
@@ -41,18 +41,29 @@
                                 {{ ucfirst($penempatan->status) }}
                             </span>
                         </td>
-                        <td class="p-3 text-sm space-x-2">
-                            <a href="{{ route('admin.penempatan.edit', $penempatan->id) }}" class="text-blue-600 hover:underline">Edit</a>
-                            <form action="{{ route('admin.penempatan.destroy', $penempatan->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                            </form>
+                        <td class="p-3 text-sm">
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('admin.penempatan.edit', $penempatan->id) }}" title="Edit" class="inline-flex items-center justify-center w-8 h-8 text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.5-8.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 8.5-8.5z"/>
+                                    </svg>
+                                </a>
+
+                                <form action="{{ route('admin.penempatan.destroy', $penempatan->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus data ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" title="Hapus" class="inline-flex items-center justify-center w-8 h-8 text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7h12M10 11v6M14 11v6M9 7V4h6v3m-8 0l1 13h6L19 7"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
+                        <td colspan="7" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -64,8 +75,30 @@
         </table>
     </div>
 
-    <div class="mt-4">
-        {{ $penempatans->links() }}
-    </div>
+    @if ($penempatans->hasPages())
+        <div class="mt-4 flex justify-end">
+            <div class="flex items-center gap-1">
+                @if ($penempatans->onFirstPage())
+                    <span class="px-3 py-2 text-sm text-gray-400 bg-white border border-gray-300 rounded-md">‹</span>
+                @else
+                    <a href="{{ $penempatans->previousPageUrl() }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">‹</a>
+                @endif
+
+                @foreach ($penempatans->getUrlRange(1, $penempatans->lastPage()) as $page => $url)
+                    @if ($page == $penempatans->currentPage())
+                        <span class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-400 rounded-md">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if ($penempatans->hasMorePages())
+                    <a href="{{ $penempatans->nextPageUrl() }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">›</a>
+                @else
+                    <span class="px-3 py-2 text-sm text-gray-400 bg-white border border-gray-300 rounded-md">›</span>
+                @endif
+            </div>
+        </div>
+    @endif
 
 </x-layouts.admin>

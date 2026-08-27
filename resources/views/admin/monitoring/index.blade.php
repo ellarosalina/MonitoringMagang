@@ -1,8 +1,23 @@
 <x-layouts.admin title="Monitoring Magang" subtitle="Pantau progress seluruh mahasiswa magang">
 
-    <a href="{{ route('admin.monitoring.export') }}" class="inline-block mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-        Export ke Excel
-    </a>
+    <div class="flex items-center gap-2 mb-4">
+        <form method="GET" action="{{ route('admin.monitoring.index') }}" class="flex items-center gap-2">
+            <div class="relative w-80">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"/>
+                </svg>
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari mahasiswa atau sekolah..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400">
+            </div>
+            <button type="submit" class="px-5 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">Cari</button>
+            @if(!empty($search))
+                <a href="{{ route('admin.monitoring.index') }}" class="px-5 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">Reset</a>
+            @endif
+        </form>
+
+        <a href="{{ route('admin.monitoring.export') }}" class="inline-block px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition">
+            Export ke Excel
+        </a>
+    </div>
 
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
         <table class="w-full text-left">
@@ -52,12 +67,17 @@
                             </span>
                         </td>
                         <td class="p-3 text-sm">
-                            <a href="{{ route('admin.monitoring.show', $penempatan->id) }}" class="text-blue-600 hover:underline">Lihat</a>
+                            <a href="{{ route('admin.monitoring.show', $penempatan->id) }}" title="Lihat Detail" class="inline-flex items-center justify-center w-8 h-8 text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
+                        <td colspan="9" class="p-4 text-center text-gray-500">Belum ada data penempatan.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -69,8 +89,33 @@
         </table>
     </div>
 
-    <div class="mt-4">
-        {{ $penempatans->links() }}
-    </div>
+    @if ($penempatans->hasPages())
+        <div class="mt-4 flex items-center justify-between">
+            <div class="text-sm text-gray-500">
+                Menampilkan {{ $penempatans->firstItem() }}–{{ $penempatans->lastItem() }} dari {{ $penempatans->total() }} data
+            </div>
+            <div class="flex items-center gap-1">
+                @if ($penempatans->onFirstPage())
+                    <span class="px-3 py-2 text-sm text-gray-400 bg-white border border-gray-300 rounded-md">‹</span>
+                @else
+                    <a href="{{ $penempatans->previousPageUrl() }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">‹</a>
+                @endif
+
+                @foreach ($penempatans->getUrlRange(1, $penempatans->lastPage()) as $page => $url)
+                    @if ($page == $penempatans->currentPage())
+                        <span class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-400 rounded-md">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if ($penempatans->hasMorePages())
+                    <a href="{{ $penempatans->nextPageUrl() }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">›</a>
+                @else
+                    <span class="px-3 py-2 text-sm text-gray-400 bg-white border border-gray-300 rounded-md">›</span>
+                @endif
+            </div>
+        </div>
+    @endif
 
 </x-layouts.admin>

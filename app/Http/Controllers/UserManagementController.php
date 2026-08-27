@@ -10,21 +10,39 @@ use Illuminate\Support\Facades\Hash;
 class UserManagementController extends Controller
 {
     public function index(Request $request)
-    {
-        $role = $request->query('role');
+{
+    $role = $request->query('role');
+    $search = $request->query('search');
 
-        $query = User::with(['roles', 'guruPamong', 'mahasiswa']);
+    $query = User::with(['roles', 'guruPamong', 'mahasiswa']);
 
-        if ($role) {
-            $query->role($role);
-        }
-
-        $users = $query->latest()->paginate(15)->appends(['role' => $role]);
-
-        $sekolahs = \App\Models\Sekolah::where('status', 'aktif')->get();
-
-        return view('admin.users.index', compact('users', 'role', 'sekolahs'));
+    if ($role) {
+        $query->role($role);
     }
+
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+              ->orWhere('email', 'like', '%' . $search . '%');
+        });
+    }
+
+    $users = $query->latest()
+        ->paginate(15)
+        ->appends([
+            'role' => $role,
+            'search' => $search,
+        ]);
+
+    $sekolahs = \App\Models\Sekolah::where('status', 'aktif')->get();
+
+    return view('admin.users.index', compact(
+        'users',
+        'role',
+        'search',
+        'sekolahs'
+    ));
+}
 
     public function create()
     {

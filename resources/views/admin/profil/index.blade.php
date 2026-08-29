@@ -266,10 +266,6 @@
 
                         </div>
 
-                        <p class="text-xs text-gray-400 mt-2">
-                            Foto akan langsung terlihat pada profil sebelum disimpan.
-                        </p>
-
                     </div>
 
                 </div>

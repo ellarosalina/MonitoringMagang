@@ -30,16 +30,6 @@
 
     <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
 
-        <div class="px-6 py-5 border-b">
-            <h2 class="text-lg font-semibold text-gray-800">
-                Daftar Logbook Mahasiswa
-            </h2>
-
-            <p class="text-sm text-gray-500 mt-1">
-                Pantau, lihat, dan verifikasi logbook mahasiswa bimbingan.
-            </p>
-        </div>
-
         <div class="overflow-x-auto">
 
             <table class="w-full text-sm">

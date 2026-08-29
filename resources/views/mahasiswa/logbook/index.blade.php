@@ -1,4 +1,4 @@
-<x-layouts.mahasiswa title="Logbook" subtitle="">
+<x-layouts.mahasiswa title="Daftar Logbook"  subtitle="Riwayat kegiatan magang kamu">
     <div class="space-y-6">
 
         @if (session('success'))
@@ -21,10 +21,7 @@
                 {{-- HEADER --}}
                 <div class="px-6 py-5 border-b">
                     <div class="flex items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-800">Daftar Logbook</h2>
-                            <p class="text-sm text-gray-500 mt-1">Riwayat kegiatan magang kamu.</p>
-                        </div>
+                        
                     </div>
 
                     {{-- FILTER + TAMBAH --}}

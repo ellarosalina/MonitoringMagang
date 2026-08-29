@@ -8,40 +8,42 @@
                     ->exists();
             @endphp
 
-            {{-- JUDUL DAN ABSENSI HARI INI --}}
-            <div class="flex items-center justify-between gap-4 mb-2">
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Absensi Saya
-                </h1>
+            <div class="flex items-center justify-between mb-2">
 
-                @if($tanggalHariIni->isWeekend())
-                    <span class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 text-sm font-medium rounded-lg">
-                        Hari Libur - Absensi Tidak Tersedia
-                    </span>
-                @elseif($sudahAbsenHariIni)
-                    <span class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 text-sm font-medium rounded-lg">
-                        ✓ Sudah Absen Hari Ini
-                    </span>
-                @else
-                    <a
-                        href="{{ route('mahasiswa.absensi.create') }}"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-white text-blue-600 border border-blue-600 text-sm font-medium rounded-lg hover:bg-blue-50 transition"
-                    >
-                        + Isi Absensi Hari Ini
-                    </a>
-                @endif
-            </div>
+    <div class="text-sm text-gray-600">
+        Hari ini:
+        <span class="font-semibold text-gray-900">
+            {{ $tanggalHariIni->locale('id')->translatedFormat('l, d F Y') }}
+        </span>
+    </div>
 
-            {{-- TANGGAL HARI INI --}}
-            <div class="text-sm text-gray-500  mb-6 -mt-4">
-                Hari ini:
-                <span class="font-medium text-gray-700">
-                    {{ $tanggalHariIni->locale('id')->translatedFormat('l, d F Y') }}
-                </span>
-            </div>
+    @if($tanggalHariIni->isWeekend())
+
+        <span class="text-sm text-gray-600">
+            Hari Libur - Absensi Tidak Tersedia
+        </span>
+
+    @elseif($sudahAbsenHariIni)
+
+        <span class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 text-sm font-medium rounded-lg">
+            ✓ Sudah Absen Hari Ini
+        </span>
+
+    @else
+
+        <a
+            href="{{ route('mahasiswa.absensi.create') }}"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-white text-blue-600 border border-blue-600 text-sm font-medium rounded-lg hover:bg-blue-50 transition"
+        >
+            + Isi Absensi Hari Ini
+        </a>
+
+    @endif
+
+</div>
 
             {{-- TABEL --}}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>

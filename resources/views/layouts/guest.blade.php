@@ -155,9 +155,8 @@
 
             background:
                 linear-gradient(
-                    145deg,
-                    #0795a8,
-                    #1657d1
+                    #168bd1 38%,
+                    #0757a8 100%
                     
                 );
 

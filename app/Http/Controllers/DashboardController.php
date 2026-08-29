@@ -43,11 +43,8 @@ class DashboardController extends Controller
 
         $penempatanPerStatus = [
             'menunggu' => Penempatan::where('status', 'menunggu')->count(),
-
             'berjalan' => Penempatan::where('status', 'berjalan')->count(),
-
             'selesai' => Penempatan::where('status', 'selesai')->count(),
-
             'dibatalkan' => Penempatan::where('status', 'dibatalkan')->count(),
         ];
 
@@ -80,7 +77,60 @@ class DashboardController extends Controller
 
     public function guruPamong()
     {
-        return view('dashboards.guru-pamong');
+        $guruPamong = Auth::user()->guruPamong;
+
+        if (!$guruPamong) {
+            return view('dashboards.guru-pamong', [
+                'mahasiswaBimbingan' => collect(),
+                'mahasiswaCount' => 0,
+                'menungguVerifikasi' => 0,
+                'logbookDisetujui' => 0,
+            ]);
+        }
+
+        $mahasiswaBimbingan = Penempatan::with([
+            'mahasiswa.user',
+            'sekolah'
+        ])
+            ->where('guru_pamong_id', $guruPamong->id)
+            ->whereIn('status', ['menunggu', 'berjalan'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $mahasiswaCount = Penempatan::where(
+            'guru_pamong_id',
+            $guruPamong->id
+        )
+            ->whereIn('status', ['menunggu', 'berjalan'])
+            ->count();
+
+        $penempatanIds = Penempatan::where(
+            'guru_pamong_id',
+            $guruPamong->id
+        )->pluck('id');
+
+        $menungguVerifikasi = Logbook::whereIn(
+            'penempatan_id',
+            $penempatanIds
+        )
+            ->where('status_verifikasi', 'menunggu')
+            ->count();
+
+        $logbookDisetujui = Logbook::whereIn(
+            'penempatan_id',
+            $penempatanIds
+        )
+            ->where('status_verifikasi', 'disetujui')
+            ->count();
+
+        return view('dashboards.guru-pamong', compact(
+            'guruPamong',
+            'mahasiswaBimbingan',
+            'mahasiswaCount',
+            'menungguVerifikasi',
+            'logbookDisetujui'
+        ));
     }
 
     public function mahasiswa()
@@ -90,37 +140,21 @@ class DashboardController extends Controller
         if (!$mahasiswa) {
             return view('dashboards.mahasiswa', [
                 'penempatan' => null,
-
                 'hariMagang' => 0,
-
                 'totalHariKerja' => 0,
-
                 'persenKehadiran' => 0,
-
                 'hadirCount' => 0,
-
                 'sakitCount' => 0,
-
                 'izinCount' => 0,
-
                 'alpaCount' => 0,
-
                 'totalAbsensi' => 0,
-
                 'totalLogbook' => 0,
-
                 'logbookDisetujui' => 0,
-
                 'logbookRevisi' => 0,
-
                 'logbookMenunggu' => 0,
-
                 'progress' => 0,
-
                 'sisaHari' => 0,
-
                 'sudahAbsenHariIni' => false,
-
                 'perluAbsenHariIni' => false,
             ]);
         }
@@ -132,46 +166,24 @@ class DashboardController extends Controller
         if (!$penempatan) {
             return view('dashboards.mahasiswa', [
                 'penempatan' => null,
-
                 'hariMagang' => 0,
-
                 'totalHariKerja' => 0,
-
                 'persenKehadiran' => 0,
-
                 'hadirCount' => 0,
-
                 'sakitCount' => 0,
-
                 'izinCount' => 0,
-
                 'alpaCount' => 0,
-
                 'totalAbsensi' => 0,
-
                 'totalLogbook' => 0,
-
                 'logbookDisetujui' => 0,
-
                 'logbookRevisi' => 0,
-
                 'logbookMenunggu' => 0,
-
                 'progress' => 0,
-
                 'sisaHari' => 0,
-
                 'sudahAbsenHariIni' => false,
-
                 'perluAbsenHariIni' => false,
             ]);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | TANGGAL MAGANG
-        |--------------------------------------------------------------------------
-        */
 
         $tanggalMulai = $penempatan->tanggal_mulai
             ->copy()
@@ -183,68 +195,24 @@ class DashboardController extends Controller
 
         $hariIni = now()->startOfDay();
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK ABSENSI HARI INI
-        |--------------------------------------------------------------------------
-        |
-        | Kita cek langsung ke database apakah mahasiswa sudah memiliki
-        | data absensi dengan tanggal hari ini.
-        |
-        */
-
         $sudahAbsenHariIni = $penempatan->absensis()
             ->whereDate('tanggal', $hariIni)
             ->exists();
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK APAKAH HARI INI HARI KERJA
-        |--------------------------------------------------------------------------
-        */
-
         $hariIniHariKerja = $hariIni->isWeekday();
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK APAKAH HARI INI MASIH DALAM PERIODE MAGANG
-        |--------------------------------------------------------------------------
-        */
 
         $hariIniDalamPeriodeMagang =
             $hariIni->gte($tanggalMulai)
             && $hariIni->lte($tanggalSelesai);
-
-        /*
-        |--------------------------------------------------------------------------
-        | TENTUKAN APAKAH PERLU ABSEN HARI INI
-        |--------------------------------------------------------------------------
-        |
-        | Notifikasi hanya muncul jika:
-        |
-        | 1. Hari ini hari kerja
-        | 2. Hari ini berada dalam periode magang
-        | 3. Mahasiswa belum melakukan absensi
-        |
-        */
 
         $perluAbsenHariIni =
             $hariIniHariKerja
             && $hariIniDalamPeriodeMagang
             && !$sudahAbsenHariIni;
 
-        /*
-        |--------------------------------------------------------------------------
-        | HARI MAGANG YANG SUDAH BERJALAN
-        |--------------------------------------------------------------------------
-        */
-
         if ($hariIni->lt($tanggalMulai)) {
-
             $hariMagang = 0;
-
         } else {
-
             $tanggalAkhir = $hariIni->gt($tanggalSelesai)
                 ? $tanggalSelesai
                 : $hariIni;
@@ -254,7 +222,6 @@ class DashboardController extends Controller
             $tanggal = $tanggalMulai->copy();
 
             while ($tanggal->lte($tanggalAkhir)) {
-
                 if ($tanggal->isWeekday()) {
                     $hariMagang++;
                 }
@@ -263,30 +230,17 @@ class DashboardController extends Controller
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL HARI KERJA SELAMA MAGANG
-        |--------------------------------------------------------------------------
-        */
-
         $totalHariKerja = 0;
 
         $tanggal = $tanggalMulai->copy();
 
         while ($tanggal->lte($tanggalSelesai)) {
-
             if ($tanggal->isWeekday()) {
                 $totalHariKerja++;
             }
 
             $tanggal->addDay();
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA ABSENSI
-        |--------------------------------------------------------------------------
-        */
 
         $hadirCount = $penempatan->absensis()
             ->where('status', 'hadir')
@@ -304,69 +258,23 @@ class DashboardController extends Controller
             ->where('status', 'alpa')
             ->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ABSENSI YANG DIANGGAP SELESAI
-        |--------------------------------------------------------------------------
-        |
-        | Hadir = dihitung
-        | Sakit = dihitung
-        | Izin  = dihitung
-        | Alpa  = tidak dihitung
-        | Belum absen = tidak dihitung
-        |
-        */
-
         $absensiSelesai =
             $hadirCount
             + $sakitCount
             + $izinCount;
 
-        /*
-        |--------------------------------------------------------------------------
-        | PERSENTASE KEHADIRAN
-        |--------------------------------------------------------------------------
-        |
-        | Penyebut menggunakan jumlah hari kerja yang sudah berjalan.
-        |
-        | Contoh:
-        |
-        | Hari kerja berjalan = 16
-        | Absensi selesai = 15
-        |
-        | 15 / 16 x 100
-        | = 93,75%
-        | = 94%
-        |
-        */
-
         if ($hariMagang > 0) {
-
             $persenKehadiran = round(
                 ($absensiSelesai / $hariMagang) * 100
             );
-
         } else {
-
             $persenKehadiran = 0;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | BATASI KEHADIRAN
-        |--------------------------------------------------------------------------
-        */
 
         $persenKehadiran = max(
             0,
             min(100, $persenKehadiran)
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA LOGBOOK
-        |--------------------------------------------------------------------------
-        */
 
         $totalLogbook = $penempatan->logbooks()
             ->count();
@@ -383,9 +291,7 @@ class DashboardController extends Controller
             ->where('status_verifikasi', 'menunggu')
             ->count();
 
-
         if ($hariMagang > 0) {
-
             $totalTargetProgress = $hariMagang * 2;
 
             $totalProgressSelesai =
@@ -395,12 +301,9 @@ class DashboardController extends Controller
             $progress = round(
                 ($totalProgressSelesai / $totalTargetProgress) * 100
             );
-
         } else {
-
             $progress = 0;
         }
-
 
         $progress = max(
             0,
@@ -412,40 +315,24 @@ class DashboardController extends Controller
         if ($sisaHari < 0) {
             $sisaHari = 0;
         }
+
         return view('dashboards.mahasiswa', [
-
             'penempatan' => $penempatan,
-
             'hariMagang' => $hariMagang,
-
             'totalHariKerja' => $totalHariKerja,
-
             'persenKehadiran' => $persenKehadiran,
-
             'hadirCount' => $hadirCount,
-
             'sakitCount' => $sakitCount,
-
             'izinCount' => $izinCount,
-
             'alpaCount' => $alpaCount,
-
             'totalAbsensi' => $absensiSelesai,
-
             'totalLogbook' => $totalLogbook,
-
             'logbookDisetujui' => $logbookDisetujui,
-
             'logbookRevisi' => $logbookRevisi,
-
             'logbookMenunggu' => $logbookMenunggu,
-
             'progress' => $progress,
-
             'sisaHari' => $sisaHari,
-
             'sudahAbsenHariIni' => $sudahAbsenHariIni,
-
             'perluAbsenHariIni' => $perluAbsenHariIni,
         ]);
     }

@@ -34,24 +34,29 @@
                         name="search"
                         value="{{ request('search') }}"
                         placeholder="Cari Monitoring..."
-                        class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400">
+                        class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400"
+                    >
 
                     <button
                         type="submit"
                         class="absolute left-0 top-0 h-full px-3 text-gray-400 hover:text-gray-600"
-                        title="Cari">
+                        title="Cari"
+                    >
 
-                        <svg xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
                             class="w-5 h-5"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
-                            stroke-width="2">
+                            stroke-width="2"
+                        >
 
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
-                                d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0z" />
+                                d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"
+                            />
 
                         </svg>
 
@@ -66,29 +71,35 @@
                 <a
                     href="{{ route('admin.monitoring.index') }}"
                     class="inline-flex items-center justify-center w-10 h-10 border border-gray-300 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                    title="Reset pencarian">
+                    title="Reset pencarian"
+                >
 
-                    <svg xmlns="http://www.w3.org/2000/svg"
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
                         class="w-5 h-5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        stroke-width="2">
+                        stroke-width="2"
+                    >
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M4 4v5h5" />
+                            d="M4 4v5h5"
+                        />
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M20 20v-5h-5" />
+                            d="M20 20v-5h-5"
+                        />
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M5.5 9A7.5 7.5 0 0 1 18 6.5L20 9M18.5 15A7.5 7.5 0 0 1 6 17.5L4 15" />
+                            d="M5.5 9A7.5 7.5 0 0 1 18 6.5L20 9M18.5 15A7.5 7.5 0 0 1 6 17.5L4 15"
+                        />
 
                     </svg>
 
@@ -99,29 +110,35 @@
                 <button
                     type="button"
                     class="inline-flex items-center justify-center w-10 h-10 border border-gray-300 rounded-lg text-gray-400 bg-gray-50 cursor-default"
-                    title="Reset pencarian">
+                    title="Reset pencarian"
+                >
 
-                    <svg xmlns="http://www.w3.org/2000/svg"
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
                         class="w-5 h-5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        stroke-width="2">
+                        stroke-width="2"
+                    >
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M4 4v5h5" />
+                            d="M4 4v5h5"
+                        />
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M20 20v-5h-5" />
+                            d="M20 20v-5h-5"
+                        />
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M5.5 9A7.5 7.5 0 0 1 18 6.5L20 9M18.5 15A7.5 7.5 0 0 1 6 17.5L4 15" />
+                            d="M5.5 9A7.5 7.5 0 0 1 18 6.5L20 9M18.5 15A7.5 7.5 0 0 1 6 17.5L4 15"
+                        />
 
                     </svg>
 
@@ -211,7 +228,8 @@
 
                                     <div
                                         class="bg-blue-600 h-2 rounded-full"
-                                        style="width: {{ $penempatan->progress_percent }}%">
+                                        style="width: {{ $penempatan->progress_percent }}%"
+                                    >
                                     </div>
 
                                 </div>
@@ -253,41 +271,86 @@
                                     bg-red-100 text-red-700
                                 @else
                                     bg-yellow-100 text-yellow-700
-                                @endif">
-
+                                @endif"
+                            >
                                 {{ ucfirst($penempatan->status) }}
-
                             </span>
 
                         </td>
 
                         <td class="p-3 text-sm">
 
-                            <a
-                                href="{{ route('admin.monitoring.show', $penempatan->id) }}"
-                                title="Lihat Detail"
-                                class="inline-flex items-center justify-center w-8 h-8 text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition">
+                            <div class="flex items-center gap-2">
 
-                                <svg
-                                    class="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <a
+                                    href="{{ route('admin.monitoring.show', $penempatan->id) }}"
+                                    title="Lihat Detail"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-600 transition"
+                                >
 
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="w-4 h-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                    >
 
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="3"/>
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M2.458 12C3.732 8.943 7.523 6.5 12 6.5s8.268 2.443 9.542 5.5C20.268 15.057 16.477 17.5 12 17.5S3.732 15.057 2.458 12z"
+                                        />
 
-                                </svg>
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="2.5"
+                                        />
 
-                            </a>
+                                    </svg>
+
+                                </a>
+
+                                <a
+                                    href="{{ route('admin.monitoring.export.individual', $penempatan->id) }}"
+                                    title="Unduh Monitoring"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-600 transition"
+                                >
+
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="w-4 h-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                    >
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M12 4v11"
+                                        />
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="m8 11 4 4 4-4"
+                                        />
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M5 20h14"
+                                        />
+
+                                    </svg>
+
+                                </a>
+
+                            </div>
 
                         </td>
 
@@ -297,7 +360,10 @@
 
                     <tr>
 
-                        <td colspan="9" class="p-4 text-center text-gray-500">
+                        <td
+                            colspan="9"
+                            class="p-4 text-center text-gray-500"
+                        >
 
                             @if (request('search'))
 
@@ -321,7 +387,10 @@
 
                 <tr class="bg-gray-50 border-t font-semibold">
 
-                    <td colspan="9" class="p-3 text-sm">
+                    <td
+                        colspan="9"
+                        class="p-3 text-sm"
+                    >
                         Total: {{ $penempatans->total() }}
                     </td>
 

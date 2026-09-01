@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('penempatan', PenempatanController::class);
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
     Route::get('/monitoring/export', [MonitoringController::class, 'export'])->name('monitoring.export');
+    Route::get('/monitoring/{penempatan}/export', [MonitoringController::class, 'exportIndividual'])->name('monitoring.export.individual');
     Route::get('/monitoring/{penempatan}', [MonitoringController::class, 'show'])->name('monitoring.show');
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
@@ -48,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profil', [AdminProfilController::class, 'index'])->name('profil.index');
     Route::put('/profil', [AdminProfilController::class, 'update'])->name('profil.update');
     });
-    
+
     // Khusus Guru Pamong
   Route::middleware(['role:guru_pamong'])->prefix('guru-pamong')->name('guru-pamong.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'guruPamong'])->name('dashboard');

@@ -1,4 +1,4 @@
-<x-layouts.admin title="Dashboard Admin GTK" subtitle="Control panel">
+<x-layouts.admin title="Dashboard Admin" subtitle="Control panel">
 
     {{-- Ringkasan Statistik Kartu Utama --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

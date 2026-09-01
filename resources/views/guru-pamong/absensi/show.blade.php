@@ -56,23 +56,27 @@
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
 
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase">
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase text-center whitespace-nowrap">
+                            No
+                        </th>
+
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">
                             Tanggal
                         </th>
 
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase">
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">
                             Jam Masuk
                         </th>
 
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase">
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">
                             Jam Pulang
                         </th>
 
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase">
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase text-center whitespace-nowrap">
                             Status
                         </th>
 
-                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase text-center">
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase text-center whitespace-nowrap">
                             Aksi
                         </th>
 
@@ -91,19 +95,23 @@
 
                         <tr class="hover:bg-gray-50">
 
-                            <td class="px-6 py-4 text-sm text-gray-800">
+                            <td class="px-6 py-4 text-sm text-gray-800 text-center whitespace-nowrap">
+                                {{ $rekapAbsensi->firstItem() + $loop->index }}
+                            </td>
+
+                            <td class="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
                                 {{ $tanggal->locale('id')->translatedFormat('l, d F Y') }}
                             </td>
 
-                            <td class="px-6 py-4 text-sm text-gray-600">
+                            <td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
                                 {{ $absensi?->jam_masuk ?? '-' }}
                             </td>
 
-                            <td class="px-6 py-4 text-sm text-gray-600">
+                            <td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
                                 {{ $absensi?->jam_pulang ?? '-' }}
                             </td>
 
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
 
                                 @if($status === 'hadir')
 
@@ -151,13 +159,13 @@
 
                                     @if(in_array($status, ['hadir', 'izin', 'sakit', 'alpa']))
 
-                                        {{-- BUKA KEMBALI ABSEN --}}
                                         <button
                                             type="button"
                                             onclick="bukaModalAbsensi('{{ $tanggal->format('Y-m-d') }}')"
                                             title="Buka Kembali Absensi"
                                             class="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition"
                                         >
+
                                             <svg
                                                 class="w-4 h-4"
                                                 fill="none"
@@ -170,6 +178,7 @@
                                                     stroke-width="2"
                                                     d="M15 7l2 2m0 0l-2 2m2-2H9a5 5 0 000 10h2"
                                                 />
+
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
@@ -177,15 +186,16 @@
                                                     d="M9 17l-2-2m0 0l2-2m-2 2h8a5 5 0 000-10h-2"
                                                 />
                                             </svg>
+
                                         </button>
 
                                     @elseif($status === 'dibuka')
 
-                                        {{-- MENUNGGU MAHASISWA --}}
                                         <span
                                             title="Menunggu mahasiswa mengisi ulang"
                                             class="w-8 h-8 flex items-center justify-center bg-indigo-50 text-indigo-500 rounded-lg"
                                         >
+
                                             <svg
                                                 class="w-4 h-4"
                                                 fill="none"
@@ -199,6 +209,7 @@
                                                     d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"
                                                 />
                                             </svg>
+
                                         </span>
 
                                     @elseif($status === 'belum_absen')
@@ -229,7 +240,7 @@
                         <tr>
 
                             <td
-                                colspan="5"
+                                colspan="6"
                                 class="px-6 py-8 text-center text-gray-500"
                             >
                                 Belum ada data absensi.
@@ -245,9 +256,149 @@
 
         </div>
 
+        <div class="border-t border-gray-200">
+
+            <div class="px-6 py-4 flex items-center justify-between gap-4">
+
+                <p class="text-sm text-gray-500">
+                    Total {{ $rekapAbsensi->total() }} absensi
+                </p>
+
+                @if($rekapAbsensi->hasPages())
+
+                    <div class="flex items-center rounded-lg overflow-hidden border border-gray-300">
+
+                        @if($rekapAbsensi->onFirstPage())
+
+                            <span
+                                class="w-10 h-9 flex items-center justify-center bg-gray-100 text-gray-400 border-r border-gray-300"
+                            >
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m15 19-7-7 7-7"
+                                    />
+                                </svg>
+
+                            </span>
+
+                        @else
+
+                            <a
+                                href="{{ $rekapAbsensi->previousPageUrl() }}"
+                                class="w-10 h-9 flex items-center justify-center bg-white text-gray-500 border-r border-gray-300 hover:bg-gray-100 transition"
+                            >
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m15 19-7-7 7-7"
+                                    />
+                                </svg>
+
+                            </a>
+
+                        @endif
+
+                        @foreach($rekapAbsensi->getUrlRange(1, $rekapAbsensi->lastPage()) as $page => $url)
+
+                            @if($page == $rekapAbsensi->currentPage())
+
+                                <span
+                                    class="w-10 h-9 flex items-center justify-center bg-gray-100 text-gray-700 text-sm font-medium border-r border-gray-300"
+                                >
+                                    {{ $page }}
+                                </span>
+
+                            @else
+
+                                <a
+                                    href="{{ $url }}"
+                                    class="w-10 h-9 flex items-center justify-center bg-white text-gray-600 text-sm font-medium border-r border-gray-300 hover:bg-gray-100 transition"
+                                >
+                                    {{ $page }}
+                                </a>
+
+                            @endif
+
+                        @endforeach
+
+                        @if($rekapAbsensi->hasMorePages())
+
+                            <a
+                                href="{{ $rekapAbsensi->nextPageUrl() }}"
+                                class="w-10 h-9 flex items-center justify-center bg-white text-gray-500 hover:bg-gray-100 transition"
+                            >
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m9 5 7 7-7 7"
+                                    />
+                                </svg>
+
+                            </a>
+
+                        @else
+
+                            <span
+                                class="w-10 h-9 flex items-center justify-center bg-gray-100 text-gray-400"
+                            >
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m9 5 7 7-7 7"
+                                    />
+                                </svg>
+
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </div>
+
     </div>
 
-    {{-- MODAL KONFIRMASI BUKA ABSENSI --}}
     <div
         id="modalBukaAbsensi"
         class="hidden fixed inset-0 z-[9999] bg-black/50 p-4 items-center justify-center"
@@ -258,7 +409,6 @@
             onclick="event.stopPropagation()"
         >
 
-            {{-- HEADER MODAL --}}
             <div class="px-6 py-5 border-b border-gray-200">
 
                 <div class="flex items-center gap-3">
@@ -271,18 +421,21 @@
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
+
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
                                 d="M15 7l2 2m0 0l-2 2m2-2H9a5 5 0 000 10h2"
                             />
+
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
                                 d="M9 17l-2-2m0 0l2-2m-2 2h8a5 5 0 000-10h-2"
                             />
+
                         </svg>
 
                     </div>
@@ -303,7 +456,6 @@
 
             </div>
 
-            {{-- ISI MODAL --}}
             <div class="px-6 py-5">
 
                 <p class="text-sm text-gray-600 leading-6">
@@ -313,7 +465,6 @@
 
             </div>
 
-            {{-- FOOTER MODAL --}}
             <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
 
                 <button

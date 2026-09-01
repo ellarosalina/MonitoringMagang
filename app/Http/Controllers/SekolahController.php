@@ -8,36 +8,40 @@ use Illuminate\Http\Request;
 class SekolahController extends Controller
 {
     public function index(Request $request)
-{
-    $search = $request->search;
+    {
+        $search = $request->search;
 
-    $sekolahs = Sekolah::when($search, function ($query) use ($search) {
-        $query->where('nama_sekolah', 'like', "%{$search}%")
-              ->orWhere('npsn', 'like', "%{$search}%")
-              ->orWhere('kecamatan', 'like', "%{$search}%");
-    })
-    ->latest()
-    ->paginate(10)
-    ->withQueryString();
+        $sekolahs = Sekolah::when($search, function ($query) use ($search) {
+            $query->where('nama_sekolah', 'like', "%{$search}%")
+                  ->orWhere('npsn', 'like', "%{$search}%")
+                  ->orWhere('jenjang', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('kabupaten', 'like', "%{$search}%");
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
 
-    return view('admin.sekolah.index', compact('sekolahs', 'search'));
-}
+        return view('admin.sekolah.index', compact('sekolahs', 'search'));
+    }
+
     public function create()
     {
         return view('admin.sekolah.create');
     }
+
     public function store(Request $request)
     {
         $request->validate([
             'npsn' => 'required|unique:sekolahs,npsn',
             'nama_sekolah' => 'required',
-            'alamat' => 'required',
-            'kecamatan' => 'nullable',
             'kepala_sekolah' => 'nullable',
-            'no_telp' => 'nullable',
-            'email' => 'nullable|email',
+            'jenjang' => 'required|in:SMA,SMK,SLB',
+            'kecamatan' => 'nullable',
+            'kabupaten' => 'nullable',
+            'alamat' => 'required',
+            'status' => 'required|in:negeri,swasta',
             'kuota_magang' => 'nullable|integer',
-            'status' => 'required|in:aktif,nonaktif',
         ]);
 
         Sekolah::create($request->all());
@@ -60,13 +64,13 @@ class SekolahController extends Controller
         $request->validate([
             'npsn' => 'required|unique:sekolahs,npsn,' . $sekolah->id,
             'nama_sekolah' => 'required',
-            'alamat' => 'required',
-            'kecamatan' => 'nullable',
             'kepala_sekolah' => 'nullable',
-            'no_telp' => 'nullable',
-            'email' => 'nullable|email',
+            'jenjang' => 'required|in:SMA,SMK,SLB',
+            'kecamatan' => 'nullable',
+            'kabupaten' => 'nullable',
+            'alamat' => 'required',
+            'status' => 'required|in:negeri,swasta',
             'kuota_magang' => 'nullable|integer',
-            'status' => 'required|in:aktif,nonaktif',
         ]);
 
         $sekolah->update($request->all());

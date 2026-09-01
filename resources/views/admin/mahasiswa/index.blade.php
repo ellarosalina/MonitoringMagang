@@ -153,7 +153,7 @@
                     </th>
 
                     <th class="p-3 text-sm font-semibold text-gray-600">
-                        Universitas
+                        Perguruan Tinggi
                     </th>
 
                     <th class="p-3 text-sm font-semibold text-gray-600">

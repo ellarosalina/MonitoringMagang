@@ -12,13 +12,13 @@ class Sekolah extends Model
     protected $fillable = [
         'npsn',
         'nama_sekolah',
-        'alamat',
-        'kecamatan',
         'kepala_sekolah',
-        'no_telp',
-        'email',
-        'kuota_magang',
+        'jenjang',
+        'kecamatan',
+        'kabupaten',
+        'alamat',
         'status',
+        'kuota_magang',
     ];
 
     public function guruPamongs()

@@ -134,41 +134,53 @@
 
     <div class="bg-white rounded-lg shadow-sm overflow-x-auto">
 
-        <table class="w-full text-left">
+        <table class="min-w-[1400px] w-full text-left">
 
             <thead class="bg-gray-50 border-b">
 
                 <tr>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600 w-12">
+                    <th class="p-3 text-sm font-semibold text-gray-600 w-12 whitespace-nowrap">
                         No
                     </th>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600">
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[120px] whitespace-nowrap">
                         NPSN
                     </th>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600">
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[220px] whitespace-nowrap">
                         Nama Sekolah
                     </th>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600">
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[200px] whitespace-nowrap">
                         Kepala Sekolah
                     </th>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600">
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[100px] whitespace-nowrap">
+                        Jenjang
+                    </th>
+
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[160px] whitespace-nowrap">
                         Kecamatan
                     </th>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600">
-                        Kuota
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[160px] whitespace-nowrap">
+                        Kabupaten
                     </th>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600">
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[300px] whitespace-nowrap">
+                        Alamat
+                    </th>
+
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[100px] whitespace-nowrap">
                         Status
                     </th>
 
-                    <th class="p-3 text-sm font-semibold text-gray-600">
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[140px] whitespace-nowrap">
+                        Kuota
+                    </th>
+
+                    <th class="p-3 text-sm font-semibold text-gray-600 min-w-[100px] whitespace-nowrap">
                         Aksi
                     </th>
 
@@ -182,39 +194,51 @@
 
                     <tr class="border-b hover:bg-gray-50">
 
-                        <td class="p-3 text-sm">
+                        <td class="p-3 text-sm whitespace-nowrap">
                             {{ $loop->iteration + ($sekolahs->currentPage() - 1) * $sekolahs->perPage() }}
                         </td>
 
-                        <td class="p-3 text-sm">
+                        <td class="p-3 text-sm whitespace-nowrap">
                             {{ $sekolah->npsn }}
                         </td>
 
-                        <td class="p-3 text-sm">
+                        <td class="p-3 text-sm min-w-[220px] whitespace-nowrap">
                             {{ $sekolah->nama_sekolah }}
                         </td>
 
-                        <td class="p-3 text-sm">
+                        <td class="p-3 text-sm min-w-[200px] whitespace-nowrap">
                             {{ $sekolah->kepala_sekolah }}
                         </td>
 
-                        <td class="p-3 text-sm">
+                        <td class="p-3 text-sm min-w-[100px] whitespace-nowrap">
+                            {{ $sekolah->jenjang }}
+                        </td>
+
+                        <td class="p-3 text-sm min-w-[160px] whitespace-nowrap">
                             {{ $sekolah->kecamatan }}
                         </td>
 
-                        <td class="p-3 text-sm">
-                            {{ $sekolah->kuota_magang }}
+                        <td class="p-3 text-sm min-w-[160px] whitespace-nowrap">
+                            {{ $sekolah->kabupaten }}
                         </td>
 
-                        <td class="p-3 text-sm">
+                        <td class="p-3 text-sm min-w-[300px] whitespace-nowrap">
+                            {{ $sekolah->alamat }}
+                        </td>
 
-                            <span class="px-2 py-1 text-xs rounded {{ $sekolah->status == 'aktif' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700' }}">
+                        <td class="p-3 text-sm min-w-[100px] whitespace-nowrap">
+
+                            <span class="px-2 py-1 text-xs rounded {{ $sekolah->status == 'negeri' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700' }}">
                                 {{ ucfirst($sekolah->status) }}
                             </span>
 
                         </td>
 
-                        <td class="p-3 text-sm">
+                        <td class="p-3 text-sm min-w-[140px] whitespace-nowrap">
+                            {{ $sekolah->kuota_magang }}
+                        </td>
+
+                        <td class="p-3 text-sm whitespace-nowrap">
 
                             <div class="flex items-center gap-2">
 
@@ -246,7 +270,6 @@
                                     onsubmit="return confirm('Yakin hapus data sekolah ini?')">
 
                                     @csrf
-
                                     @method('DELETE')
 
                                     <button
@@ -282,7 +305,7 @@
 
                     <tr>
 
-                        <td colspan="8" class="p-4 text-center text-gray-500">
+                        <td colspan="11" class="p-4 text-center text-gray-500">
 
                             @if (request('search'))
 
@@ -306,7 +329,7 @@
 
                 <tr class="bg-gray-50 border-t font-semibold">
 
-                    <td colspan="8" class="p-3 text-sm">
+                    <td colspan="11" class="p-3 text-sm whitespace-nowrap">
                         Total: {{ $sekolahs->total() }}
                     </td>
 

@@ -6,11 +6,12 @@ use App\Models\AbsensiReopening;
 use App\Models\Penempatan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
 class GuruPamongAbsensiController extends Controller
 {
-    public function show(Penempatan $penempatan)
+    public function show(Penempatan $penempatan, Request $request)
     {
         $guruPamong = Auth::user()->guruPamong;
 
@@ -99,9 +100,29 @@ class GuruPamongAbsensiController extends Controller
             })
             ->values();
 
+        $totalAbsensi = $rekapAbsensi->count();
+
+        $perPage = 10;
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        $rekapAbsensi = new LengthAwarePaginator(
+            $rekapAbsensi
+                ->forPage($currentPage, $perPage)
+                ->values(),
+            $totalAbsensi,
+            $perPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
+
         return view('guru-pamong.absensi.show', [
             'penempatan' => $penempatan,
             'rekapAbsensi' => $rekapAbsensi,
+            'totalAbsensi' => $totalAbsensi,
         ]);
     }
 

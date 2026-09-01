@@ -12,13 +12,13 @@ return new class extends Migration
             $table->id();
             $table->string('npsn')->unique();
             $table->string('nama_sekolah');
-            $table->text('alamat');
-            $table->string('kecamatan')->nullable();
             $table->string('kepala_sekolah')->nullable();
-            $table->string('no_telp')->nullable();
-            $table->string('email')->nullable();
+            $table->string('jenjang');
+            $table->string('kecamatan')->nullable();
+            $table->string('kabupaten')->nullable();
+            $table->text('alamat');
+            $table->enum('status', ['negeri', 'swasta'])->default('negeri');
             $table->integer('kuota_magang')->default(0);
-            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();
         });
     }

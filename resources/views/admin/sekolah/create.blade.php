@@ -25,8 +25,18 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium mb-1">Alamat</label>
-                <textarea name="alamat" class="w-full border rounded p-2">{{ old('alamat') }}</textarea>
+                <label class="block font-medium mb-1">Kepala Sekolah</label>
+                <input type="text" name="kepala_sekolah" value="{{ old('kepala_sekolah') }}" class="w-full border rounded p-2">
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-medium mb-1">Jenjang</label>
+                <select name="jenjang" class="w-full border rounded p-2">
+                    <option value="">Pilih Jenjang</option>
+                    <option value="SMA" {{ old('jenjang') == 'SMA' ? 'selected' : '' }}>SMA</option>
+                    <option value="SMK" {{ old('jenjang') == 'SMK' ? 'selected' : '' }}>SMK</option>
+                    <option value="SLB" {{ old('jenjang') == 'SLB' ? 'selected' : '' }}>SLB</option>
+                </select>
             </div>
 
             <div class="mb-4">
@@ -35,31 +45,27 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium mb-1">Kepala Sekolah</label>
-                <input type="text" name="kepala_sekolah" value="{{ old('kepala_sekolah') }}" class="w-full border rounded p-2">
+                <label class="block font-medium mb-1">Kabupaten</label>
+                <input type="text" name="kabupaten" value="{{ old('kabupaten') }}" class="w-full border rounded p-2">
             </div>
 
             <div class="mb-4">
-                <label class="block font-medium mb-1">No. Telp</label>
-                <input type="text" name="no_telp" value="{{ old('no_telp') }}" class="w-full border rounded p-2">
-            </div>
-
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Email</label>
-                <input type="email" name="email" value="{{ old('email') }}" class="w-full border rounded p-2">
-            </div>
-
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Kuota Magang</label>
-                <input type="number" name="kuota_magang" value="{{ old('kuota_magang', 0) }}" class="w-full border rounded p-2">
+                <label class="block font-medium mb-1">Alamat</label>
+                <textarea name="alamat" class="w-full border rounded p-2">{{ old('alamat') }}</textarea>
             </div>
 
             <div class="mb-4">
                 <label class="block font-medium mb-1">Status</label>
                 <select name="status" class="w-full border rounded p-2">
-                    <option value="aktif">Aktif</option>
-                    <option value="nonaktif">Nonaktif</option>
+                    <option value="">Pilih Status</option>
+                    <option value="negeri" {{ old('status') == 'negeri' ? 'selected' : '' }}>Negeri</option>
+                    <option value="swasta" {{ old('status') == 'swasta' ? 'selected' : '' }}>Swasta</option>
                 </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-medium mb-1">Kuota Magang</label>
+                <input type="number" name="kuota_magang" value="{{ old('kuota_magang', 0) }}" class="w-full border rounded p-2">
             </div>
 
             <div class="flex gap-2 mt-6">
